@@ -1,10 +1,11 @@
 # depslib dependency file v1.0
-1640278288 source:c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\main.c
+1640283865 source:c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\main.c
 	<stdio.h>
 	<stdlib.h>
 	<gtk/gtk.h>
 	"Structed.c"
 	"InputWindow.c"
+	"parking.c"
 
 1632553837 c:\msys64\mingw64\include\gtk-3.0\gtk\gtk.h
 	<gdk/gdk.h>
@@ -3020,4 +3021,9 @@
 1640279027 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\inputwindow.c
 	<gtk/gtk.h>
 	<string.h>
+
+1640283753 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\parking.c
+	<stdio.h>
+	<string.h>
+	<time.h>
 

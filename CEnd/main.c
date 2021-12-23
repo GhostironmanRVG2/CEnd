@@ -3,6 +3,7 @@
 #include <gtk/gtk.h>
 #include "Structed.c"
 #include "InputWindow.c"
+#include "parking.c"
 GdkPixbuf *create_pixbuf(const gchar * filename) {
 
    GdkPixbuf *pixbuf;
@@ -43,15 +44,56 @@ int main( int argc, char *argv[])
     GtkWidget *hbox_array[4];
     /**ARRAY DINAMICO DE WIDGETS**/
     parque_widgets widgets_array[4][4];
+    /**INICIALIZACAO DO NOSSO PARQUE**/
+    parking parque[3][4][4];
+    inicializar(0,0,0,0,parque);
+    setTamanho(3,4,4);
     /**FUNCAO PARA ESTACIONAR**/
     void button_estacionar(GtkWidget *widget, gpointer data){
-
+    //REGISTOS
+    char registo_aqui[10];
+    char registo_comparar[10];
     //ABRIR JANELA PARA TIRAR A MATRICULA
     gtk_widget_hide(windowPrincipal);
     //GUARDAR A MATRICULA
     strcpy(matricula,input(argc,argv));
+    //SE O GET DA MATRICULA NAO FOR ERROR ESTACIONAMOS
+    if(matricula!="ERROR"){
+    /**ESTACIONAR EM SI**/
+    //REGISTO DO BOTAO QUE FOI CLICADO
+    snprintf(registo_aqui,10,"%x",widget);
+    //PROCURAR O WIDGET
+    int l=0;
+    for (l;l<4;l++)
+    {
+    //LINHA
+    int c=0;
+    for (c;c<4;c++)
+    {
+    //PASSAR O VALOR DO REGISTO NESSA POSICAO PARA O COMPARAR
+    snprintf(registo_comparar,10,"%x",widgets_array[l][c].button);
+    //VERIFICAR SE O AQUI E O COMPARAR SAO IGUAIS..SE FOREM ACABA AQUI O LOOP E DEVOLVE Linha e Coluna
+    if(!(strcmp(registo_aqui,registo_comparar))){
+    //ESTACIONAR
+    Estacionar(posi,l,c,matricula,3,parque);
+    //SETAR IMAGEM NESSA POSICAO
+    gtk_image_set_from_file(widgets_array[l][c].imagem,"estacionado.png");
+    //MUDAR O NOME DO BUTTON
+    gtk_button_set_label(widgets_array[l][c].button,"INFO");
+    break;
+    }
+
+    }
+
+    }
+    }
+
+
+
+printf("%s\n%s",parque[0][0][0].veiculo.matricula,parque[1][0][0].veiculo.matricula);
     //VOLTAR A DEMONSTRAR A WINDOW
     gtk_widget_show(windowPrincipal);
+
     }
 
     /**FUNCAO AVANCAR**/
