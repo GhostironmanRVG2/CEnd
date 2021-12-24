@@ -45,9 +45,11 @@ int main( int argc, char *argv[])
     /**ARRAY DINAMICO DE WIDGETS**/
     parque_widgets widgets_array[4][4];
     /**INICIALIZACAO DO NOSSO PARQUE**/
-    parking parque[3][4][4];
+    parking parque[10][4][4];
     inicializar(0,0,0,0,parque);
-    setTamanho(3,4,4);
+    setTamanho(10,4,4);
+    /**INICIALIZAR HISTORICO**/
+    parking historico[40];
     /**FUNCAO PARA ESTACIONAR**/
     void button_estacionar(GtkWidget *widget, gpointer data){
     //REGISTOS
@@ -96,6 +98,106 @@ printf("%s\n%s",parque[0][0][0].veiculo.matricula,parque[1][0][0].veiculo.matric
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**DIALOG WINDOW**/
+void show_error() {
+  GtkWidget *dialog;
+  dialog = gtk_message_dialog_new(GTK_WINDOW(windowPrincipal),
+            GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_ERROR,
+            GTK_BUTTONS_OK,
+            "Clique em carros para destacionar!");
+  gtk_window_set_title(GTK_WINDOW(dialog), "Warning!");
+  gtk_dialog_run(GTK_DIALOG(dialog));
+  gtk_widget_destroy(dialog);
+}
+
+
+
+
+
+
+
+
+
+
+    /**FUNCAO DESTACIONAR**/
+    //FUNCAO PARA CASO O BOTAO SEJA CLICAVEL
+void image_clicked(GtkWidget *widget, gpointer data) {
+
+//VERIFICAR TYPES DAS IMAGENS PELO EVENT BOX
+if(!(strcmp(gtk_widget_get_name(widget),"e"))){
+//CASO ESTEJA ESTACIONADO EFETUAR DESTACIONAR
+//REGISTOS
+char registo_aqui[10];
+char registo_comparar[10];
+   /**ESTACIONAR EM SI**/
+    //REGISTO DO BOTAO QUE FOI CLICADO
+    snprintf(registo_aqui,10,"%x",widget);
+    //PROCURAR O WIDGET
+    int l=0;
+    for (l;l<4;l++)
+    {
+    //LINHA
+    int c=0;
+    for (c;c<4;c++)
+    {
+    //PASSAR O VALOR DO REGISTO NESSA POSICAO PARA O COMPARAR
+    snprintf(registo_comparar,10,"%x",widgets_array[l][c].event_box);
+    //VERIFICAR SE O AQUI E O COMPARAR SAO IGUAIS..SE FOREM ACABA AQUI O LOOP E DEVOLVE Linha e Coluna
+    if(!(strcmp(registo_aqui,registo_comparar))){
+    //DESTACIONAR
+    Destacionar(posi,l,c,0,parque,historico);
+    //SETAR IMAGEM NESSA POSICAO
+    gtk_image_set_from_file(widgets_array[l][c].imagem,"parking-lot.png");
+    //MUDAR O NOME DO BUTTON
+    gtk_button_set_label(widgets_array[l][c].button,"ESTACIONAR");
+    //MUDAR O LABEL
+    char str[10];
+    snprintf(str,10,"[%d][%d][%d]",posi,l,c);
+    gtk_frame_set_label(widgets_array[l][c].frame,str);
+    break;
+    }
+
+    }
+
+    }
+
+
+}else{
+//invocar funcao show error
+show_error();
+}
+
+
+
+
+}
+
     /**FUNCAO AVANCAR**/
     void button_next(GtkWidget *widget, gpointer data) {
     //SETTAR A POSI
@@ -109,9 +211,25 @@ printf("%s\n%s",parque[0][0][0].veiculo.matricula,parque[1][0][0].veiculo.matric
     for (c;c<4;c++)
     {
     /**CRIAR LABEL PERSONALIZADO**/
-    char str[10];
+    char str[30];
+
+    //AVERIGUAR OS LUGARES CONSOANTE O AVANCO
+    if(!(strlen(parque[posi][l][c].veiculo.matricula)>7)){
+    //CONTINUACAO LABEL PERSONALIZADO
     snprintf(str,10,"[%d][%d][%d]",posi,l,c);
     gtk_frame_set_label(widgets_array[l][c].frame,str);
+    //CASO NAO HAJA MATRICULA NESSE DADO LUGAR
+    gtk_button_set_label(widgets_array[l][c].button,"ESTACIONAR");
+    gtk_image_set_from_file(widgets_array[l][c].imagem,"parking-lot.png");
+    gtk_widget_set_name(widgets_array[l][c].event_box,"p");
+    }else{
+    snprintf(str,30,"[%d][%d][%d]MATRICULA: %s",posi,l,c,parque[posi][l][c].veiculo.matricula);
+    gtk_frame_set_label(widgets_array[l][c].frame,str);
+    gtk_button_set_label(widgets_array[l][c].button,"INFO");
+    gtk_image_set_from_file(widgets_array[l][c].imagem,"estacionado.png");
+    gtk_widget_set_name(widgets_array[l][c].event_box,"e");
+    }
+
     }
     }
     //TORNAR O BOTAO PREV VISIVEL QUANDO ESTIVERMOS NA POSI 1
@@ -139,9 +257,29 @@ printf("%s\n%s",parque[0][0][0].veiculo.matricula,parque[1][0][0].veiculo.matric
     for (c;c<4;c++)
     {
     /**CRIAR LABEL PERSONALIZADO**/
-    char str[10];
+    char str[30];
+     //AVERIGUAR OS LUGARES CONSOANTE O RECUO
+    if(!(strlen(parque[posi][l][c].veiculo.matricula)>7)){
+    //CONTINUACAO LABEL PERSONALIZADO
     snprintf(str,10,"[%d][%d][%d]",posi,l,c);
     gtk_frame_set_label(widgets_array[l][c].frame,str);
+    //CASO NAO HAJA MATRICULA NESSE DADO LUGAR
+    //MUDAR BUTTON E IMAGEM
+    gtk_button_set_label(widgets_array[l][c].button,"ESTACIONAR");
+    gtk_image_set_from_file(widgets_array[l][c].imagem,"parking-lot.png");
+    //DAR UM NOME NA IMAGEM
+    gtk_widget_set_name(widgets_array[l][c].event_box,"p");
+    }else{
+    //CONTINUACAO LABEL PERSONALIZADO
+    snprintf(str,30,"[%d][%d][%d]MATRICULA: %s",posi,l,c,parque[posi][l][c].veiculo.matricula);
+    gtk_frame_set_label(widgets_array[l][c].frame,str);
+    //MUDAR BUTTON E IMAGEM
+    gtk_button_set_label(widgets_array[l][c].button,"INFO");
+    gtk_image_set_from_file(widgets_array[l][c].imagem,"estacionado.png");
+     //DAR UM NOME NA IMAGEM
+    gtk_widget_set_name(widgets_array[l][c].event_box,"e");
+    }
+
     }
     }
     //TORNAR O BOTAO PREV INVISIVEL QUANDO ESTIVER NA POSICAO 0
@@ -161,6 +299,8 @@ printf("%s\n%s",parque[0][0][0].veiculo.matricula,parque[1][0][0].veiculo.matric
 GtkCssProvider *cssProvider = gtk_css_provider_new();
 /**INICIALIZAR O PROGRAMA*/
 gtk_init(&argc, &argv);
+Estacionar(0,0,3,"AA-AA-PP",3,parque);
+Estacionar(0,1,2,"PP-LL-PP",3,parque);
 /**POSICAO DO PROGRAMA AO ABRIR**/
 posi=0;
 /**LOAD DO CSS*/
@@ -230,10 +370,17 @@ for(int i=0;i<5;i++){
     for (c;c<4;c++)
     {
     /**CRIAR LABEL PERSONALIZADO**/
-    char str[10];
+    char str[30];
+    if(!(strlen(parque[0][l][c].veiculo.matricula)>7)){
     snprintf(str,10,"[%d][%d][%d]",0,l,c);
     /**FRAME**/
     widgets_array[l][c].frame=gtk_frame_new(str);
+    }else{
+        snprintf(str,30,"[%d][%d][%d]MATRICULA: %s",0,l,c,parque[0][l][c].veiculo.matricula);
+    /**FRAME**/
+    widgets_array[l][c].frame=gtk_frame_new(str);
+    }
+    gtk_widget_set_name( widgets_array[l][c].frame,"frame" );
     //ADICIONAR AO HBOX
     gtk_box_pack_start(GTK_BOX(hbox_array[l]),widgets_array[l][c].frame,TRUE,TRUE,0);
     /**VERTICAL**/
@@ -245,13 +392,29 @@ for(int i=0;i<5;i++){
     //ADICIONAR AO VBOX
     gtk_box_pack_start(GTK_BOX(widgets_array[l][c].vertical),widgets_array[l][c].event_box,TRUE,TRUE,0);
     /**IMAGENS**/
+    if(!(strlen(parque[0][l][c].veiculo.matricula)>7)){
     //LIVRE
     widgets_array[l][c].imagem=gtk_image_new_from_file ("parking-lot.png");
+    //DAR-LHE UM NOME
+    gtk_widget_set_name(widgets_array[l][c].event_box,"p");
+    }else{
+    //OCUPADO
+    widgets_array[l][c].imagem=gtk_image_new_from_file("estacionado.png");
+    //DAR-LHE UM NOME
+    gtk_widget_set_name(widgets_array[l][c].event_box,"e");
+    }
     //ADICIONAR NA EVENT BOX
     gtk_container_add(GTK_CONTAINER(widgets_array[l][c].event_box),widgets_array[l][c].imagem);
+    //CRIAR EVENTO E ASSOCIAR A UMA FUNCAO
+    g_signal_connect(G_OBJECT(widgets_array[l][c].event_box), "button_press_event",
+      G_CALLBACK(image_clicked), NULL);
     /**BUTTONS**/
     //ESTACIONAR
+    if(!(strlen(parque[0][l][c].veiculo.matricula)>7)){
     widgets_array[l][c].button=gtk_button_new_with_label("ESTACIONAR");
+    }else{
+    widgets_array[l][c].button=gtk_button_new_with_label("INFO");
+    }
     g_signal_connect(G_OBJECT(widgets_array[l][c].button), "clicked",
       G_CALLBACK(button_estacionar), NULL);
     gtk_box_pack_start(GTK_BOX(widgets_array[l][c].vertical),widgets_array[l][c].button,TRUE,TRUE,0);

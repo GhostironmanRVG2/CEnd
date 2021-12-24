@@ -11,6 +11,7 @@ background-color: #555555; /* Green */
   color: white;
   text-decoration: none;
   font-size: 16px;
+  font-weight: bold;
 }
 button#button{
 background-image: none;
@@ -20,4 +21,8 @@ background-color: #555555; /* Green */
   text-decoration: none;
   font-size: 16px;
   padding: 30px 40px;
+}
+frame#frame{
+	color: white;
+	font-weight: bold;
 }

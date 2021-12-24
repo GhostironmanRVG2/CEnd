@@ -158,6 +158,7 @@ float Pagamento(int p , int l ,int c,parking parque[][linha][coluna]){
 //FUNCAO PARA SETAR OS DADOS
 void Destacionar(int p , int l ,int c,int count, parking parque[][linha][coluna],parking historico[]){
 //DAR ASIGN DOS VALORES COM PISO,LINHA E COLUNA FORNECIDOS CONSOANTE O QUE O UTILIZADOR CLICA NA FRONT-END
+    strcpy(parque[p][l][c].veiculo.matricula,"");
     //MUDAR O ESTADO SIMPLESMENTE PARA DESTACIONADO
     parque[p][l][c].estado=0;
     //INICIALIZAR DADOS DE TIME PARA SABER A DATA ATUAL
