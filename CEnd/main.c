@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
-#include "Structed.c"
-#include "InputWindow.c"
 #include "parking.c"
+#include "InputWindow.c"
+#include "Structed.c"
+#include "InfoWindow.c"
 GdkPixbuf *create_pixbuf(const gchar * filename) {
 
    GdkPixbuf *pixbuf;
@@ -39,7 +40,6 @@ int main( int argc, char *argv[])
     GtkWidget *buttoned;
     GtkWidget *fixed;
     int posi;
-    char matricula[10];
     /**ARRAY DINAMICO DE HBOX**/
     GtkWidget *hbox_array[4];
     /**ARRAY DINAMICO DE WIDGETS**/
@@ -51,7 +51,46 @@ int main( int argc, char *argv[])
     /**INICIALIZAR HISTORICO**/
     parking historico[40];
     /**FUNCAO PARA ESTACIONAR**/
+
+
+
+
+    /**DIALOG WINDOW**/
+void show_error_duplicated() {
+  GtkWidget *dialog;
+  dialog = gtk_message_dialog_new(GTK_WINDOW(windowPrincipal),
+            GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_ERROR,
+            GTK_BUTTONS_OK,
+            "Essa matricula ja existe!");
+  gtk_window_set_title(GTK_WINDOW(dialog), "Warning!");
+  gtk_dialog_run(GTK_DIALOG(dialog));
+  gtk_widget_destroy(dialog);
+}
+
+
+    /**DIALOG WINDOW**/
+void show_sucess() {
+  GtkWidget *dialog;
+  dialog = gtk_message_dialog_new(GTK_WINDOW(windowPrincipal),
+            GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_ERROR,
+            GTK_BUTTONS_OK,
+            "Foi estacionado com sucesso!");
+  gtk_window_set_title(GTK_WINDOW(dialog), "Warning!");
+  gtk_dialog_run(GTK_DIALOG(dialog));
+  gtk_widget_destroy(dialog);
+}
+
+
+
+
+
+
     void button_estacionar(GtkWidget *widget, gpointer data){
+    if(!(strcmp(gtk_button_get_label(widget),"ESTACIONAR"))){
+    //matricula
+    char matricula[10];
     //REGISTOS
     char registo_aqui[10];
     char registo_comparar[10];
@@ -59,8 +98,9 @@ int main( int argc, char *argv[])
     gtk_widget_hide(windowPrincipal);
     //GUARDAR A MATRICULA
     strcpy(matricula,input(argc,argv));
+    if(Find_car(matricula,parque)!=0){
     //SE O GET DA MATRICULA NAO FOR ERROR ESTACIONAMOS
-    if(matricula!="ERROR"){
+    if(strcmp(matricula,"ERROR")){
     /**ESTACIONAR EM SI**/
     //REGISTO DO BOTAO QUE FOI CLICADO
     snprintf(registo_aqui,10,"%x",widget);
@@ -80,21 +120,93 @@ int main( int argc, char *argv[])
     Estacionar(posi,l,c,matricula,3,parque);
     //SETAR IMAGEM NESSA POSICAO
     gtk_image_set_from_file(widgets_array[l][c].imagem,"estacionado.png");
+    //SETAR NOME DA IMAGEM PARA UM WIDGET ESTACIONADO
+    gtk_widget_set_name(widgets_array[l][c].event_box,"e");
     //MUDAR O NOME DO BUTTON
     gtk_button_set_label(widgets_array[l][c].button,"INFO");
+    //MUDAR O LABEL
+    char str[30];
+    snprintf(str,30,"[%d][%d][%d]MATRICULA: %s",posi,l,c,parque[posi][l][c].veiculo.matricula);
+    gtk_frame_set_label(widgets_array[l][c].frame,str);
+    //MSG DE SUCESSO
+    gtk_widget_show(windowPrincipal);
+    show_sucess();
     break;
     }
 
     }
 
     }
+    }else{
+    gtk_widget_show(windowPrincipal);
+    }
+    }else{
+    //DIZER QUE JA EXISTE ESSA MATRICULA
+    gtk_widget_show(windowPrincipal);
+    show_error_duplicated();
+
+    }
+    }else{
+
+
+
+    /**GET DATA**/
+    //REGISTOS
+    char matricula[10];
+    char tipo[6];
+    char registo_aqui[10];
+    char registo_comparar[10];
+    int dia;
+    int mes;
+    int ano;
+    int horas;
+    int min;
+    int sec;
+    //PROCURAR O WIDGET
+     //REGISTO DO BOTAO QUE FOI CLICADO
+    snprintf(registo_aqui,10,"%x",widget);
+    int l=0;
+    for (l;l<4;l++)
+    {
+    //LINHA
+    int c=0;
+    for (c;c<4;c++)
+    {
+    //PASSAR O VALOR DO REGISTO NESSA POSICAO PARA O COMPARAR
+    snprintf(registo_comparar,10,"%x",widgets_array[l][c].button);
+    //VERIFICAR SE O AQUI E O COMPARAR SAO IGUAIS..SE FOREM ACABA AQUI O LOOP E DEVOLVE Linha e Coluna
+    if(!(strcmp(registo_aqui,registo_comparar))){
+    //HIDE DA JANELA
+    gtk_widget_hide(windowPrincipal);
+    //GET DOS DADOS
+    strcpy(matricula,parque[posi][l][c].veiculo.matricula);
+    //TIPO DE CARRO
+    strcpy(tipo,"CARRO");
+    //dia
+    dia=parque[posi][l][c].entrada.day_chegada;
+    //mes
+    mes=parque[posi][l][c].entrada.month_chegada;
+    //ano
+    ano=parque[posi][l][c].entrada.year_chegada;
+    //horas
+    horas=parque[posi][l][c].entrada.hours_chegada;
+    //minutos
+    min=parque[posi][l][c].entrada.minutes_chegada;
+    //sec
+    sec=parque[posi][l][c].entrada.secounds_chegada;
+    //OPEN INFOWINDOW
+    InfoWindow(argc,argv,matricula,dia,mes,ano,horas,min,sec);
+    gtk_widget_show(windowPrincipal);
+    break;
+    }
+
+    }
+
+    }
+
     }
 
 
-
-printf("%s\n%s",parque[0][0][0].veiculo.matricula,parque[1][0][0].veiculo.matricula);
-    //VOLTAR A DEMONSTRAR A WINDOW
-    gtk_widget_show(windowPrincipal);
 
     }
 
@@ -139,7 +251,18 @@ void show_error() {
 
 
 
-
+    /**DIALOG WINDOW**/
+void show_price(char price[]) {
+  GtkWidget *dialog;
+  dialog = gtk_message_dialog_new(GTK_WINDOW(windowPrincipal),
+            GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_ERROR,
+            GTK_BUTTONS_OK,
+            price);
+  gtk_window_set_title(GTK_WINDOW(dialog), "Warning!");
+  gtk_dialog_run(GTK_DIALOG(dialog));
+  gtk_widget_destroy(dialog);
+}
 
 
 
@@ -170,8 +293,9 @@ char registo_comparar[10];
     snprintf(registo_comparar,10,"%x",widgets_array[l][c].event_box);
     //VERIFICAR SE O AQUI E O COMPARAR SAO IGUAIS..SE FOREM ACABA AQUI O LOOP E DEVOLVE Linha e Coluna
     if(!(strcmp(registo_aqui,registo_comparar))){
-    //DESTACIONAR
-    Destacionar(posi,l,c,0,parque,historico);
+    char price[30];
+    //DESTACIONAR E RECEBER PAGAMENTO
+    float pagamento=Destacionar(posi,l,c,0,parque,historico);
     //SETAR IMAGEM NESSA POSICAO
     gtk_image_set_from_file(widgets_array[l][c].imagem,"parking-lot.png");
     //MUDAR O NOME DO BUTTON
@@ -180,6 +304,8 @@ char registo_comparar[10];
     char str[10];
     snprintf(str,10,"[%d][%d][%d]",posi,l,c);
     gtk_frame_set_label(widgets_array[l][c].frame,str);
+    snprintf(price,30,"custo do estacionamento: %f",pagamento);
+    show_price(price);
     break;
     }
 
@@ -422,6 +548,9 @@ for(int i=0;i<5;i++){
 
     }
     }
+//CASO SEJA DESTRUIDA
+g_signal_connect(windowPrincipal, "destroy",
+      G_CALLBACK(gtk_main_quit), NULL);
 /**MOSTRAR A WINDOW*/
 gtk_widget_show_all(windowPrincipal);
 /**FUNCAO PARA DAR HIDE**/

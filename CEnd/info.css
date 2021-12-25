@@ -1,0 +1,51 @@
+label#titulo {
+  font-family: "Open Sans", sans-serif;
+  font-size: 20px;
+  color: white;
+  font-weight: bold;
+}
+label#matricula_t {
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  color: white;
+  font-weight: bold;
+}
+label#tipo_t {
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  color: white;
+  font-weight: bold;
+}
+label#data_t {
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  color: white;
+  font-weight: bold;
+}
+label#matricula_c {
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
+}
+label#tipo_c {
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
+}
+label#data_c {
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
+}
+button#voltar_i{
+background-image: none;
+background-color: #555555; /* Green */
+  border: none;
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 20px 30px;
+}

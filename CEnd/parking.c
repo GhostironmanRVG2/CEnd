@@ -12,7 +12,7 @@ int tipo_de_veiculo;
 //nmr lavagens
 int n_lavagens;
 //pagamento
-int pagamento;
+float pagamento;
 }car;
 
 typedef struct data_entrada{
@@ -54,8 +54,8 @@ typedef struct parking
 
 //DECLARAR FUNCAO QUE LEVA ARRAY
 void Estacionar(int p, int l ,int c, char m[], int t, parking parque[][linha][coluna]);
-void Destacionar(int p, int l, int c,int count,parking parque[][linha][coluna],parking historico[]);
-float Pagamento(int p, int l ,int c,parking parque[][linha][coluna]);
+float Destacionar(int p, int l, int c,int count,parking parque[][linha][coluna],parking historico[]);
+void Pagamento(int p, int l ,int c,parking parque[][linha][coluna]);
 void Lavagem(int p, int l, int c, parking parque [][linha][coluna]);
 int L_livres(parking parque [][linha][coluna]);
 int L_ocupados(parking parque [][linha][coluna]);
@@ -100,10 +100,10 @@ struct tm *local = localtime(&now);
 
 
 //FUNCAO PARA DETERMINAR O PAGAMENTO DO PARQUE
-float Pagamento(int p , int l ,int c,parking parque[][linha][coluna]){
+void Pagamento(int p , int l ,int c,parking parque[][linha][coluna]){
     float min, horas, dia, mes, ano,sec;
     float total;
-    int pagamento;
+    float pagamento;
 
     //TOTAL DE HORAS PASSADAS
     ano = (float)parque[p][l][c].saida.year_saida - (float)parque[p][l][c].entrada.year_chegada;
@@ -150,13 +150,12 @@ float Pagamento(int p , int l ,int c,parking parque[][linha][coluna]){
     total = total * pagamento;
     //TOTAL A PAGAR É IGUAL AO NUMERO DE LAVAGENS X 20 (PREÇO POR LAVAGEM) + O AS HORAS
     parque[p][l][c].veiculo.pagamento = (parque[p][l][c].veiculo.n_lavagens * 20) + total;
-    return parque[p][l][c].veiculo.pagamento;
 }
 
 
 
 //FUNCAO PARA SETAR OS DADOS
-void Destacionar(int p , int l ,int c,int count, parking parque[][linha][coluna],parking historico[]){
+float Destacionar(int p , int l ,int c,int count, parking parque[][linha][coluna],parking historico[]){
 //DAR ASIGN DOS VALORES COM PISO,LINHA E COLUNA FORNECIDOS CONSOANTE O QUE O UTILIZADOR CLICA NA FRONT-END
     strcpy(parque[p][l][c].veiculo.matricula,"");
     //MUDAR O ESTADO SIMPLESMENTE PARA DESTACIONADO
@@ -179,9 +178,11 @@ void Destacionar(int p , int l ,int c,int count, parking parque[][linha][coluna]
     parque[p][l][c].saida.secounds_saida=data_saida->tm_sec;
 
     //INICIALIZAR FUNCAO PAGAMENTO COM PARAMETROS , DATA DE CHEGADA E DATA DE SAIDA;ARMAZENAR NA ABA "PAGAMENTO"
-    parque[p][l][c].veiculo.pagamento=Pagamento(p,l,c,parque);
+    Pagamento(p,l,c,parque);
     //COLOCAR O OBJETO NO HISTORICO
     historico[count]=parque[p][l][c];
+    //retornar o pagamento
+    return parque[p][l][c].veiculo.pagamento;
 }
 
 
@@ -238,82 +239,41 @@ int L_ocupados(parking parque [][linha][coluna]){
 
 
 
-//FUNÇÃO PARA PROCURAR UMA MATRICULA
-int Find_lugar(char m[], parking parque [][linha][coluna]){
-        int p, l, c;
-    //VERIFICAMOS TODAS OS PISOS
-    for (p; p <=piso; p++){
-        //VERIFICAMOS TODAS AS LINHAS
-        for (l; l <=linha; l++){
-            //VERIFICAMOS TODAS AS COLUNAS
-            for (c; c <=coluna; c++){
-                //VERIFICAMOS SE A MATRICULA DO SITIO É IGUAL À QUE PROCURAMOS
-                int valor = strcmp(parque[p][l][c].veiculo.matricula, m);
-                //CASO SEJA 0 É PORQUE AS DUAS STRINGS SÃO IGUAIS
-                if (valor == 0){
-                    //RETURNAMOS O PISO-LINHA-COLUNA
-                    printf("%d-%d-%d", p,l,c);
-                }
-            }
-        }
-    }
-    return 0;
-}
-
-
 
 //FUNÇÃO PARA PROCURAR UMA MATRICULA
 int Find_car(char m[], parking parque [][linha][coluna]){
-    int p, l, c;
-    //VERIFICAMOS TODAS OS PISOS
-    for (p; p <=piso; p++){
-        //VERIFICAMOS TODAS AS LINHAS
-        for (l; l <=linha; l++){
-            //VERIFICAMOS TODAS AS COLUNAS
-            for (c; c <=coluna; c++){
-                //VERIFICAMOS SE A MATRICULA DO SITIO É IGUAL À QUE PROCURAMOS
-                int valor = strcmp(parque[p][l][c].veiculo.matricula, m);
-                //CASO SEJA 0 É PORQUE AS DUAS STRINGS SÃO IGUAIS
-                if (valor == 0){
-                    //RETURNAMOS OS DADOS DO CARRO COM A RESPETIVA MATRICULA
-                    printf("Matricula: %s", parque[p][l][c].veiculo.matricula);
-                    printf("Tipo: %d", parque[p][l][c].tipo);
-                    printf("Data de entrada: %d-%d-%d %d:%d:%d", parque[p][l][c].entrada.year_chegada, parque[p][l][c].entrada.month_chegada,parque[p][l][c].entrada.day_chegada,parque[p][l][c].entrada.hours_chegada,parque[p][l][c].entrada.minutes_chegada,parque[p][l][c].entrada.secounds_chegada);
-                    printf("Data de saida: %d-%d-%d %d:%d:%d", parque[p][l][c].saida.year_saida, parque[p][l][c].saida.month_saida,parque[p][l][c].saida.day_saida,parque[p][l][c].saida.hours_saida,parque[p][l][c].saida.minutes_saida,parque[p][l][c].saida.secounds_saida);
-                    printf("Pagamento: %f", parque[p][l][c].veiculo.pagamento);
-                }
-            }
-        }
+    int valor=1;
+
+        for (int p = 0; p <piso; p++)
+{
+    //QUANDO VOLTA VOLTA AQUI MUDA O PISO
+    int l=0;
+    for (l;l<linha;l++)
+    {
+    //LINHA
+    int c=0;
+
+    for (c;c<coluna;c++)
+    {
+     //VERIFICAR SE HÁ MATRICULAS IGUAIS
+     if(strcmp(m,parque[p][l][c].veiculo.matricula)==0){
+        valor=0;
+        break;
+     }
+
     }
-    return 0;
+    }
+    }
+    return valor;
 }
+
+
+
 
 
 
 //FUNCAO DE INICIALIZAR
 void inicializar(int defs_number,int carv_number,int bus_number,int helicopter_number,parking parque[][linha][coluna]){
-    int counter_defs=0;
-    int counter_caravanas=0;
-    int counter_bus=0;
-if(helicopter_number==1){
-    strcpy(parque[piso][0][0].veiculo.matricula,"");
-    parque[piso][0][0].tipo=4;
-    parque[piso][0][0].veiculo.n_lavagens=0;
-    parque[piso][0][0].entrada.year_chegada=0;
-    parque[piso][0][0].entrada.month_chegada=0;
-    parque[piso][0][0].entrada.day_chegada=0;
-    parque[piso][0][0].entrada.hours_chegada=0;
-    parque[piso][0][0].entrada.minutes_chegada=0;
-    parque[piso][0][0].entrada.secounds_chegada=0;
-    parque[piso][0][0].saida.year_saida=0;
-    parque[piso][0][0].saida.month_saida=0;
-    parque[piso][0][0].saida.day_saida=0;
-    parque[piso][0][0].saida.hours_saida=0;
-    parque[piso][0][0].saida.minutes_saida=0;
-    parque[piso][0][0].saida.secounds_saida=0;
-    parque[piso][0][0].estado=0;
-    parque[piso][0][0].veiculo.pagamento=0;
-}
     for (int p = 0; p <piso; p++)
 {
     //QUANDO VOLTA VOLTA AQUI MUDA O PISO
@@ -325,73 +285,7 @@ if(helicopter_number==1){
 
     for (c;c<coluna;c++)
     {
-    //AS OPERACOES VAO EXECUTAR TODAS AQUI PORTANTO...
-    //SETAR ATRIBUTOS COMO VAZIOS
-    if((defs_number>0)&&(p==0)&&(defs_number!=counter_defs)){
-    strcpy(parque[p][l][c].veiculo.matricula,"");
-    parque[p][l][c].tipo=0;
-    parque[p][l][c].veiculo.n_lavagens=0;
-    parque[p][l][c].entrada.year_chegada=0;
-    parque[p][l][c].entrada.month_chegada=0;
-    parque[p][l][c].entrada.day_chegada=0;
-    parque[p][l][c].entrada.hours_chegada=0;
-    parque[p][l][c].entrada.minutes_chegada=0;
-    parque[p][l][c].entrada.secounds_chegada=0;
-    parque[p][l][c].saida.year_saida=0;
-    parque[p][l][c].saida.month_saida=0;
-    parque[p][l][c].saida.day_saida=0;
-    parque[p][l][c].saida.hours_saida=0;
-    parque[p][l][c].saida.minutes_saida=0;
-    parque[p][l][c].saida.secounds_saida=0;
-    parque[p][l][c].estado=0;
-    parque[p][l][c].veiculo.pagamento=0;
-    counter_defs=counter_defs+1;
-    }else if(counter_bus!=bus_number&&bus_number>0&&p==0){
-
- strcpy(parque[p][l][c].veiculo.matricula,"");
-    parque[p][l][c].tipo=3;
-    parque[p][l][c].veiculo.n_lavagens=0;
-    parque[p][l][c].entrada.year_chegada=0;
-    parque[p][l][c].entrada.month_chegada=0;
-    parque[p][l][c].entrada.day_chegada=0;
-    parque[p][l][c].entrada.hours_chegada=0;
-    parque[p][l][c].entrada.minutes_chegada=0;
-    parque[p][l][c].entrada.secounds_chegada=0;
-    parque[p][l][c].saida.year_saida=0;
-    parque[p][l][c].saida.month_saida=0;
-    parque[p][l][c].saida.day_saida=0;
-    parque[p][l][c].saida.hours_saida=0;
-    parque[p][l][c].saida.minutes_saida=0;
-    parque[p][l][c].saida.secounds_saida=0;
-    parque[p][l][c].estado=0;
-    parque[p][l][c].veiculo.pagamento=0;
-    counter_bus+=1;
-
-    }else if(counter_caravanas!=carv_number&&carv_number>0&&p==1){
-
-
- strcpy(parque[p][l][c].veiculo.matricula,"");
-    parque[p][l][c].tipo=2;
-    parque[p][l][c].veiculo.n_lavagens=0;
-    parque[p][l][c].entrada.year_chegada=0;
-    parque[p][l][c].entrada.month_chegada=0;
-    parque[p][l][c].entrada.day_chegada=0;
-    parque[p][l][c].entrada.hours_chegada=0;
-    parque[p][l][c].entrada.minutes_chegada=0;
-    parque[p][l][c].entrada.secounds_chegada=0;
-    parque[p][l][c].saida.year_saida=0;
-    parque[p][l][c].saida.month_saida=0;
-    parque[p][l][c].saida.day_saida=0;
-    parque[p][l][c].saida.hours_saida=0;
-    parque[p][l][c].saida.minutes_saida=0;
-    parque[p][l][c].saida.secounds_saida=0;
-    parque[p][l][c].estado=0;
-    parque[p][l][c].veiculo.pagamento=0;
-    counter_caravanas+=1;
-
-
-    }else{
-    strcpy(parque[p][l][c].veiculo.matricula,"");
+   strcpy(parque[p][l][c].veiculo.matricula,"");
     parque[p][l][c].tipo=1;
     parque[p][l][c].veiculo.n_lavagens=0;
     parque[p][l][c].entrada.year_chegada=0;
@@ -406,10 +300,9 @@ if(helicopter_number==1){
     parque[p][l][c].saida.hours_saida=0;
     parque[p][l][c].saida.minutes_saida=0;
     parque[p][l][c].saida.secounds_saida=0;
-    parque[p][l][c].estado=0;
+    parque[p][l][c].estado=2;
     parque[p][l][c].veiculo.pagamento=0;
-    }
-    }
-    }
+}
+}
 }
 }

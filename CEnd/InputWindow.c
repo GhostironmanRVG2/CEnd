@@ -1,6 +1,5 @@
 #include <gtk/gtk.h>
 #include <string.h>
-
 /**FUNCAO INPUT*/
 char* input(int argc, char** argv){
 /**FUNCAO PARA VERIFICAR MATRICULA**/
