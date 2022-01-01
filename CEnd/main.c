@@ -5,6 +5,7 @@
 #include "InputWindow.c"
 #include "Structed.c"
 #include "InfoWindow.c"
+#include "SizeWindow.c"
 GdkPixbuf *create_pixbuf(const gchar * filename) {
 
    GdkPixbuf *pixbuf;
@@ -39,18 +40,65 @@ int main( int argc, char *argv[])
     GtkWidget *button;
     GtkWidget *buttoned;
     GtkWidget *fixed;
+    parking ***parque;
+    parque_widgets **widgets_array;
+    GtkWidget **hbox_array;
     int posi;
-    /**ARRAY DINAMICO DE HBOX**/
-    GtkWidget *hbox_array[4];
-    /**ARRAY DINAMICO DE WIDGETS**/
-    parque_widgets widgets_array[4][4];
-    /**INICIALIZACAO DO NOSSO PARQUE**/
-    parking parque[10][4][4];
+    FILE *file;
+    //LER DADOS RELATIVOS AO TAMANHO DO PARQUE
+    file=fopen("size","rb");
+    //LER
+    fscanf(file,"piso=%d\n",&piso);
+    fscanf(file,"linha=%d\n",&linha);
+    fscanf(file,"coluna=%d\n",&coluna);
+    fclose(file);
+    //CASO ESTES VALORES SEJAM ZERO!!!
+    if(piso==0|linha==0|coluna==0){
+    /**SETAR TAMANHO DO NOSSO PARQUE**/
+    int pp[3];
+    SizeWindow(argc,argv,pp);
     inicializar(0,0,0,0,parque);
-    setTamanho(10,4,4);
+    setTamanho(pp[0],pp[1],pp[2]);
+    //ARMAZENAR ESTES DADOS NUM TXT
+    file=fopen("size","wb");
+    if(file==NULL){
+
+    printf("\nERROR");
+    exit(1);
+    }
+    //ESCREVER OS DADOS NO FILE
+    fprintf(file,"piso=%d\n",piso);
+    fprintf(file,"linha=%d\n",linha);
+    fprintf(file,"coluna=%d\n",coluna);
+    printf("DADOS GUARDADOS!");
+    }
+    //CASO OS VALORES SEJAM INTRODUZIDOS
+    if(piso!=0|linha!=0|coluna!=0){
+
+
+    /**ARRAY DINAMICO DE HBOX**/
+    hbox_array = (GtkWidget **) malloc(sizeof(GtkWidget*) * linha+1);
+    /**ARRAY DINAMICO DE WIDGETS**/
+    widgets_array = (parque_widgets **) malloc (sizeof(parque_widgets **)*linha);
+  for (int l = 0; l < linha; l++) {
+        widgets_array[l] = (parque_widgets *) malloc(sizeof(parque_widgets)*coluna);
+
+  }
+    /**INICIALIZACAO DO NOSSO PARQUE**/
+    parque = (parking ***) malloc (sizeof(parking ***)*piso);
+  for (int p = 0; p < piso; p++) {
+    parque[p] = (parking **) malloc(sizeof(parking*)*linha);
+    for (int l = 0; l < linha; l++) {
+      parque[p][l] = (parking *) malloc(sizeof(parking)*coluna);
+    }
+  }
+
+
+
+
     /**INICIALIZAR HISTORICO**/
     parking historico[40];
-    /**FUNCAO PARA ESTACIONAR**/
+
 
 
 
@@ -63,6 +111,7 @@ void show_error_duplicated() {
             GTK_MESSAGE_ERROR,
             GTK_BUTTONS_OK,
             "Essa matricula ja existe!");
+ gtk_window_set_position(dialog,GTK_WIN_POS_CENTER_ALWAYS);
   gtk_window_set_title(GTK_WINDOW(dialog), "Warning!");
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
@@ -77,6 +126,7 @@ void show_sucess() {
             GTK_MESSAGE_ERROR,
             GTK_BUTTONS_OK,
             "Foi estacionado com sucesso!");
+  gtk_window_set_position(dialog,GTK_WIN_POS_CENTER_ALWAYS);
   gtk_window_set_title(GTK_WINDOW(dialog), "Warning!");
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
@@ -90,7 +140,7 @@ void show_sucess() {
     void button_estacionar(GtkWidget *widget, gpointer data){
     if(!(strcmp(gtk_button_get_label(widget),"ESTACIONAR"))){
     //matricula
-    char matricula[10];
+    char matricula[7];
     //REGISTOS
     char registo_aqui[10];
     char registo_comparar[10];
@@ -106,11 +156,11 @@ void show_sucess() {
     snprintf(registo_aqui,10,"%x",widget);
     //PROCURAR O WIDGET
     int l=0;
-    for (l;l<4;l++)
+    for (l;l<linha;l++)
     {
     //LINHA
     int c=0;
-    for (c;c<4;c++)
+    for (c;c<coluna;c++)
     {
     //PASSAR O VALOR DO REGISTO NESSA POSICAO PARA O COMPARAR
     snprintf(registo_comparar,10,"%x",widgets_array[l][c].button);
@@ -125,11 +175,12 @@ void show_sucess() {
     //MUDAR O NOME DO BUTTON
     gtk_button_set_label(widgets_array[l][c].button,"INFO");
     //MUDAR O LABEL
-    char str[30];
-    snprintf(str,30,"[%d][%d][%d]MATRICULA: %s",posi,l,c,parque[posi][l][c].veiculo.matricula);
+    char str[29];
+    snprintf(str,29,"[%d][%d][%d]MATRICULA: %s",posi,l,c,parque[posi][l][c].veiculo.matricula);
     gtk_frame_set_label(widgets_array[l][c].frame,str);
-    //MSG DE SUCESSO
+    //TORNAR A WINDOW VISIVEL
     gtk_widget_show(windowPrincipal);
+    //MSG DE SUCESSO
     show_sucess();
     break;
     }
@@ -152,7 +203,7 @@ void show_sucess() {
 
     /**GET DATA**/
     //REGISTOS
-    char matricula[10];
+    char matricula[5];
     char tipo[6];
     char registo_aqui[10];
     char registo_comparar[10];
@@ -166,11 +217,11 @@ void show_sucess() {
      //REGISTO DO BOTAO QUE FOI CLICADO
     snprintf(registo_aqui,10,"%x",widget);
     int l=0;
-    for (l;l<4;l++)
+    for (l;l<linha;l++)
     {
     //LINHA
     int c=0;
-    for (c;c<4;c++)
+    for (c;c<coluna;c++)
     {
     //PASSAR O VALOR DO REGISTO NESSA POSICAO PARA O COMPARAR
     snprintf(registo_comparar,10,"%x",widgets_array[l][c].button);
@@ -243,6 +294,7 @@ void show_error() {
             GTK_MESSAGE_ERROR,
             GTK_BUTTONS_OK,
             "Clique em carros para destacionar!");
+  gtk_window_set_position(dialog,GTK_WIN_POS_CENTER_ALWAYS);
   gtk_window_set_title(GTK_WINDOW(dialog), "Warning!");
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
@@ -259,6 +311,7 @@ void show_price(char price[]) {
             GTK_MESSAGE_ERROR,
             GTK_BUTTONS_OK,
             price);
+  gtk_window_set_position(dialog,GTK_WIN_POS_CENTER_ALWAYS);
   gtk_window_set_title(GTK_WINDOW(dialog), "Warning!");
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
@@ -283,11 +336,11 @@ char registo_comparar[10];
     snprintf(registo_aqui,10,"%x",widget);
     //PROCURAR O WIDGET
     int l=0;
-    for (l;l<4;l++)
+    for (l;l<linha;l++)
     {
     //LINHA
     int c=0;
-    for (c;c<4;c++)
+    for (c;c<coluna;c++)
     {
     //PASSAR O VALOR DO REGISTO NESSA POSICAO PARA O COMPARAR
     snprintf(registo_comparar,10,"%x",widgets_array[l][c].event_box);
@@ -304,7 +357,7 @@ char registo_comparar[10];
     char str[10];
     snprintf(str,10,"[%d][%d][%d]",posi,l,c);
     gtk_frame_set_label(widgets_array[l][c].frame,str);
-    snprintf(price,30,"custo do estacionamento: %f",pagamento);
+    snprintf(price,40,"custo do estacionamento: %f",pagamento);
     show_price(price);
     break;
     }
@@ -330,11 +383,11 @@ show_error();
     posi+=1;
     //QUANDO VOLTA VOLTA AQUI MUDA O PISO
     int l=0;
-    for (l;l<4;l++)
+    for (l;l<linha;l++)
     {
     //LINHA
     int c=0;
-    for (c;c<4;c++)
+    for (c;c<coluna;c++)
     {
     /**CRIAR LABEL PERSONALIZADO**/
     char str[30];
@@ -362,8 +415,8 @@ show_error();
     if(posi==1){
      gtk_widget_show(button);
     }
-    //TORNAR O BOTAO NEXT INVISIVEL QUANDO ESTIVER NO MAXIMO n
-    if(posi==9){
+    //TORNAR O BOTAO NEXT INVISIVEL QUANDO ESTIVER NO MAXIMO n-1
+    if(posi==piso-1){
      gtk_widget_hide(buttoned);
     }
 
@@ -376,11 +429,11 @@ show_error();
     posi-=1;
     //QUANDO VOLTA VOLTA AQUI MUDA O PISO
     int l=0;
-    for (l;l<4;l++)
+    for (l;l<linha;l++)
     {
     //LINHA
     int c=0;
-    for (c;c<4;c++)
+    for (c;c<coluna;c++)
     {
     /**CRIAR LABEL PERSONALIZADO**/
     char str[30];
@@ -412,8 +465,8 @@ show_error();
     if(posi==0){
      gtk_widget_hide(button);
     }
-    //TORNAR VISIVEL O BOTAO NEXT QUANDO ESTIVER NA POSICAO n-1
-    if(posi==8){
+    //TORNAR VISIVEL O BOTAO NEXT QUANDO ESTIVER NA POSICAO n-2
+    if(posi==piso-2){
     gtk_widget_show(buttoned);
     }
 
@@ -425,8 +478,6 @@ show_error();
 GtkCssProvider *cssProvider = gtk_css_provider_new();
 /**INICIALIZAR O PROGRAMA*/
 gtk_init(&argc, &argv);
-Estacionar(0,0,3,"AA-AA-PP",3,parque);
-Estacionar(0,1,2,"PP-LL-PP",3,parque);
 /**POSICAO DO PROGRAMA AO ABRIR**/
 posi=0;
 /**LOAD DO CSS*/
@@ -434,6 +485,64 @@ gtk_css_provider_load_from_path(cssProvider, "common.css", NULL);
 gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
                                GTK_STYLE_PROVIDER(cssProvider),
                                GTK_STYLE_PROVIDER_PRIORITY_USER);
+/**LOAD DOS DADOS**/
+file=fopen("car","r");
+    for (int p = 0; p < piso; p++)
+  {
+
+     for (int l = 0; l < linha; l++)
+     {
+       for (int c = 0; c < coluna; c++)
+       {
+      char j[9];
+      fscanf(file,"day_chegada:%dhours_chegada:%dminutes_chegada:%dmonth_chegada:%dsecounds_chegada:%dyear_chegada:%destado:%dday_saida:%dhours_saida:%dminutes_saida:%dmonth_saida:%dsecounds_saida:%dyear_saida:%dtipo:%dn_lavagens:%dpagamento:%ftipo_de_veiculo:%dm:%c%c%c%c%c%c%c%c\n",
+        &parque[p][l][c].entrada.day_chegada,
+       &parque[p][l][c].entrada.hours_chegada,
+       &parque[p][l][c].entrada.minutes_chegada,
+       &parque[p][l][c].entrada.month_chegada,
+       &parque[p][l][c].entrada.secounds_chegada,
+       &parque[p][l][c].entrada.year_chegada,
+
+       &parque[p][l][c].estado,
+
+       &parque[p][l][c].saida.day_saida,
+       &parque[p][l][c].saida.hours_saida,
+       &parque[p][l][c].saida.minutes_saida,
+       &parque[p][l][c].saida.month_saida,
+       &parque[p][l][c].saida.secounds_saida,
+       &parque[p][l][c].saida.year_saida,
+
+       &parque[p][l][c].tipo,
+
+       &parque[p][l][c].veiculo.n_lavagens,
+       &parque[p][l][c].veiculo.pagamento,
+       &parque[p][l][c].veiculo.tipo_de_veiculo,
+      &j[0],
+      &j[1],
+      &j[2],
+      &j[3],
+      &j[4],
+      &j[5],
+      &j[6],
+      &j[7]
+      );
+
+      strcpy(parque[p][l][c].veiculo.matricula,j);
+
+
+
+
+       }
+
+     }
+
+
+
+
+  }
+
+  fclose(file);
+
 /**CRIAR UMA WINDOW*/
 windowPrincipal = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 /**DIZER-LHE PARA FICAR NO MEIO*/
@@ -455,8 +564,8 @@ vbox=gtk_vbox_new(TRUE,1);
 gtk_container_add(GTK_CONTAINER(windowPrincipal),vbox);
 
 /**INICIALIZAR HBOXES**/
-for(int i=0;i<5;i++){
-    if(i==4){
+for(int i=0;i<linha+1;i++){
+    if(i==linha){
     /**HBOX**/
     hbox_array[i]=gtk_hbox_new(TRUE,0);
     /**EMPACOTAR**/
@@ -489,11 +598,11 @@ for(int i=0;i<5;i++){
 
     //QUANDO VOLTA VOLTA AQUI MUDA O PISO
     int l=0;
-    for (l;l<4;l++)
+    for (l;l<linha;l++)
     {
     //LINHA
     int c=0;
-    for (c;c<4;c++)
+    for (c;c<coluna;c++)
     {
     /**CRIAR LABEL PERSONALIZADO**/
     char str[30];
@@ -556,5 +665,70 @@ gtk_widget_show_all(windowPrincipal);
 /**FUNCAO PARA DAR HIDE**/
 gtk_widget_hide(button);
 gtk_main();
+    }
+
+
+    file=fopen("car","wb");
+    if(file==NULL){
+
+    printf("\nERROR");
+    exit(1);
+    }
+
+  for (int p = 0; p < piso; p++)
+  {
+
+     for (int l = 0; l < linha; l++)
+     {
+       for (int c = 0; c < coluna; c++)
+       {
+
+       fprintf(file,"day_chegada:%dhours_chegada:%dminutes_chegada:%dmonth_chegada:%dsecounds_chegada:%dyear_chegada:%destado:%dday_saida:%dhours_saida:%dminutes_saida:%dmonth_saida:%dsecounds_saida:%dyear_saida:%dtipo:%dn_lavagens:%dpagamento:%ftipo_de_veiculo:%dm:%c%c%c%c%c%c%c%c\n",
+       parque[p][l][c].entrada.day_chegada,
+       parque[p][l][c].entrada.hours_chegada,
+       parque[p][l][c].entrada.minutes_chegada,
+       parque[p][l][c].entrada.month_chegada,
+       parque[p][l][c].entrada.secounds_chegada,
+       parque[p][l][c].entrada.year_chegada,
+
+       parque[p][l][c].estado,
+
+       parque[p][l][c].saida.day_saida,
+       parque[p][l][c].saida.hours_saida,
+       parque[p][l][c].saida.minutes_saida,
+       parque[p][l][c].saida.month_saida,
+       parque[p][l][c].saida.secounds_saida,
+       parque[p][l][c].saida.year_saida,
+
+       parque[p][l][c].tipo,
+
+       parque[p][l][c].veiculo.n_lavagens,
+       parque[p][l][c].veiculo.pagamento,
+       parque[p][l][c].veiculo.tipo_de_veiculo,
+       parque[p][l][c].veiculo.matricula[0],
+        parque[p][l][c].veiculo.matricula[1],
+        parque[p][l][c].veiculo.matricula[2],
+        parque[p][l][c].veiculo.matricula[3],
+        parque[p][l][c].veiculo.matricula[4],
+        parque[p][l][c].veiculo.matricula[5],
+        parque[p][l][c].veiculo.matricula[6],
+        parque[p][l][c].veiculo.matricula[7]
+
+
+
+       );
+
+
+       }
+
+     }
+
+
+
+
+  }
+  fclose(file);
+
+
 }
 

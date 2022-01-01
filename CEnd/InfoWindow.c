@@ -88,7 +88,9 @@ void InfoWindow(int argc, char** argv,char matricula[],int dia,int mes,int ano,i
 
 
     //LABLEL MATRICULA DO CARRO
-    matricula_c = gtk_label_new(matricula);
+    char result[7];
+    snprintf(result,9,"%s",matricula);
+    matricula_c = gtk_label_new(result);
     gtk_widget_set_name(matricula_c, "matricula_c");
     gtk_fixed_put(GTK_FIXED(fixedInfo), matricula_c, 150, 80);
     gtk_widget_set_size_request(matricula_c, 80, 30);

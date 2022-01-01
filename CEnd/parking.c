@@ -6,7 +6,7 @@ int piso,linha,coluna;
 typedef struct carro{
 //ALO
 //MATRICULA
-char matricula[9];
+char matricula[7];
 //TIPO VIATURA(0 - Deficientes, 1 - Carro, 2 - Caravanas, 3- Autocarro&Camioes, 4 - Helicopteros)
 int tipo_de_veiculo;
 //nmr lavagens
@@ -53,14 +53,14 @@ typedef struct parking
 }parking;
 
 //DECLARAR FUNCAO QUE LEVA ARRAY
-void Estacionar(int p, int l ,int c, char m[], int t, parking parque[][linha][coluna]);
-float Destacionar(int p, int l, int c,int count,parking parque[][linha][coluna],parking historico[]);
-void Pagamento(int p, int l ,int c,parking parque[][linha][coluna]);
-void Lavagem(int p, int l, int c, parking parque [][linha][coluna]);
-int L_livres(parking parque [][linha][coluna]);
-int L_ocupados(parking parque [][linha][coluna]);
-int Find_lugar(char m[], parking parque [][linha][coluna]);
-int Find_car(char m[], parking parque [][linha][coluna]);
+void Estacionar(int p, int l ,int c, char m[], int t, parking ***parque);
+float Destacionar(int p, int l, int c,int count,parking ***parque,parking historico[]);
+void Pagamento(int p, int l ,int c,parking ***parque);
+void Lavagem(int p, int l, int c, parking ***parque);
+int L_livres(parking ***parque);
+int L_ocupados(parking ***parque);
+int Find_lugar(char m[], parking ***parque);
+int Find_car(char m[], parking ***parque);
 //DECLARAR O TAMANHO DO ARRAY PARQUE
 void setTamanho(int p,int l,int c){
  piso=p;
@@ -69,7 +69,7 @@ void setTamanho(int p,int l,int c){
 }
 
 //FUNCAO PARA SETAR OS DADOS
-void Estacionar(int p , int l ,int c,char m[], int t, parking parque[][linha][coluna]){
+void Estacionar(int p , int l ,int c,char m[], int t, parking ***parque){
 //INICIALIZAR DADOS DE TIME
 time_t now;
 time(&now);
@@ -100,10 +100,10 @@ struct tm *local = localtime(&now);
 
 
 //FUNCAO PARA DETERMINAR O PAGAMENTO DO PARQUE
-void Pagamento(int p , int l ,int c,parking parque[][linha][coluna]){
+void Pagamento(int p , int l ,int c,parking ***parque){
     float min, horas, dia, mes, ano,sec;
     float total;
-    float pagamento;
+    float pagamento=2.50;
 
     //TOTAL DE HORAS PASSADAS
     ano = (float)parque[p][l][c].saida.year_saida - (float)parque[p][l][c].entrada.year_chegada;
@@ -115,36 +115,8 @@ void Pagamento(int p , int l ,int c,parking parque[][linha][coluna]){
     horas = (float)parque[p][l][c].saida.day_saida - (float)parque[p][l][c].entrada.day_chegada;
     //TOTAL DE MINUTOS PASSADOS
     min = (float)parque[p][l][c].saida.day_saida - (float)parque[p][l][c].entrada.day_chegada;
-    //SECOUNDS GET
-    sec = (float)parque[p][l][c].saida.secounds_saida - (float)parque[p][l][c].entrada.secounds_chegada;
     //DETERMINAMOS O NUMERO TOTAL DE HORAS E MULTIPLACAMOS PELO TOTAL A PAGAR
-    total = (ano * 8640) + (mes * 744) + (dia * 24) + horas + (min / 60);
-
-    //VERIFICAR O TIPO DE VIATURA PARA CALCULAR O PREÇO
-    switch (parque[p][l][c].tipo){
-    //CASO SEJA UM CARRO DE TIPO 0 - DEFECIENTES
-    case 0:
-        pagamento = 2.50;
-    break;
-    //CASO SEJA UM CARRO DE TIPO 1 - CAMIOES/AUTOCARROS
-     case 1:
-        pagamento = 10;
-    break;
-    //CASO SEJA UM CARRO DE TIPO 2 - AUTOCARAVANA
-    case 2:
-        pagamento = 5;
-    break;
-    //CASJO SEJA UM CARRO DE TIPO 3 - CARRO
-    case 3:
-        pagamento = 2.5;
-    break;
-    //CASO SEJA UM CAROR DE TIPO 4 - HELICOPETRO
-    case 4:
-        pagamento = 200;
-    break;
-    //CASO O TIPO NÃO ESTEJA DEFENIDO
-    default: printf("ERROR 404 - Tipo de viatura não encontrado");
-    }
+    total = (ano * 8760) + (mes * 744) + (dia * 24) + horas + (min / 60);
 
     //NUMERO DE HORAS VS O PREÇO À HORA DO RESPETIVO TIPO DE VEICULO
     total = total * pagamento;
@@ -155,7 +127,7 @@ void Pagamento(int p , int l ,int c,parking parque[][linha][coluna]){
 
 
 //FUNCAO PARA SETAR OS DADOS
-float Destacionar(int p , int l ,int c,int count, parking parque[][linha][coluna],parking historico[]){
+float Destacionar(int p , int l ,int c,int count, parking ***parque,parking historico[]){
 //DAR ASIGN DOS VALORES COM PISO,LINHA E COLUNA FORNECIDOS CONSOANTE O QUE O UTILIZADOR CLICA NA FRONT-END
     strcpy(parque[p][l][c].veiculo.matricula,"");
     //MUDAR O ESTADO SIMPLESMENTE PARA DESTACIONADO
@@ -188,7 +160,7 @@ float Destacionar(int p , int l ,int c,int count, parking parque[][linha][coluna
 
 
 //FUNÇÃO PARA CONTAR O NUMERO DE LAVAGENS FEITAS
-void Lavagem(int p, int l, int c, parking parque [][linha][coluna]){
+void Lavagem(int p, int l, int c, parking ***parque){
     //ADICIONAMOS +1 AO CONTADOR DE LAVAGENS
     parque[p][l][c].veiculo.n_lavagens = parque[p][l][c].veiculo.n_lavagens + 1;
 }
@@ -196,7 +168,7 @@ void Lavagem(int p, int l, int c, parking parque [][linha][coluna]){
 
 
 //FUNÇÃO PARA CONTAR TODOS OS LUGARES LIVRES
-int L_livres(parking parque [][linha][coluna]){
+int L_livres(parking ***parque){
     int p = 0, l = 0, c = 0, count = 0;
     //VERIFICAMOS TODOS OS PISOS
     for (p; p <= piso; p++){
@@ -218,7 +190,7 @@ int L_livres(parking parque [][linha][coluna]){
 
 
 //FUNÇÃO PARA CONTAR TODOS OS LUGARES OCUPADOS
-int L_ocupados(parking parque [][linha][coluna]){
+int L_ocupados(parking ***parque){
     int p = 0, l = 0, c = 0, count = 0;
     //VERIFICAMOS TODAS OS PISOS
     for (p; p <=piso; p++){
@@ -241,7 +213,7 @@ int L_ocupados(parking parque [][linha][coluna]){
 
 
 //FUNÇÃO PARA PROCURAR UMA MATRICULA
-int Find_car(char m[], parking parque [][linha][coluna]){
+int Find_car(char m[], parking ***parque){
     int valor=1;
 
         for (int p = 0; p <piso; p++)
@@ -273,7 +245,7 @@ int Find_car(char m[], parking parque [][linha][coluna]){
 
 
 //FUNCAO DE INICIALIZAR
-void inicializar(int defs_number,int carv_number,int bus_number,int helicopter_number,parking parque[][linha][coluna]){
+void inicializar(int defs_number,int carv_number,int bus_number,int helicopter_number,parking ***parque){
     for (int p = 0; p <piso; p++)
 {
     //QUANDO VOLTA VOLTA AQUI MUDA O PISO
@@ -285,7 +257,7 @@ void inicializar(int defs_number,int carv_number,int bus_number,int helicopter_n
 
     for (c;c<coluna;c++)
     {
-   strcpy(parque[p][l][c].veiculo.matricula,"");
+    parque[p][l][c].veiculo.matricula[0]=0;
     parque[p][l][c].tipo=1;
     parque[p][l][c].veiculo.n_lavagens=0;
     parque[p][l][c].entrada.year_chegada=0;

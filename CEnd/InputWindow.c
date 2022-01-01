@@ -63,7 +63,7 @@ GtkWidget *button;
 GtkWidget *input_widget;
 GtkWidget *hbox_button;
 char* m;
-char matricula[10];
+char matricula[7];
 int i;
 /**DIALOG WINDOW**/
 void show_error() {
