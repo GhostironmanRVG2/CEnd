@@ -55,103 +55,50 @@ void on_changed(GtkWidget *widget, gpointer label) {
 int main(int argc, char *argv[]) {
 
   GtkWidget *window;
-  GtkWidget *list;
-
+  GtkWidget **hbox_array;
   GtkWidget *vbox;
-  GtkWidget *label;
-  GtkTreeSelection *selection;
+  GtkWidget *button;
 
+
+ void button_clicked(GtkWidget *widget, gpointer data) {
+  gtk_widget_destroy(hbox_array[0]);
+  g_print("%d",sizeof(hbox_array));
+}
   gtk_init(&argc, &argv);
 
+     /**ARRAY DINAMICO DE HBOX**/
+    hbox_array = (GtkWidget **) malloc(sizeof(GtkWidget*) * 6);
+
+  hbox_array[0]=gtk_button_new_with_label("hello");
+  hbox_array[1]=gtk_button_new_with_label("hello");
+  hbox_array[2]=gtk_button_new_with_label("hello");
+  hbox_array[3]=gtk_button_new_with_label("hello");
+  hbox_array[4]=gtk_button_new_with_label("hello");
+
+
+  vbox= gtk_vbox_new(FALSE,1);
+  gtk_box_pack_start(GTK_BOX(vbox),hbox_array[0],TRUE,TRUE,1);
+  gtk_box_pack_start(GTK_BOX(vbox),hbox_array[1],TRUE,TRUE,1);
+  gtk_box_pack_start(GTK_BOX(vbox),hbox_array[2],TRUE,TRUE,1);
+  gtk_box_pack_start(GTK_BOX(vbox),hbox_array[3],TRUE,TRUE,1);
+  gtk_box_pack_start(GTK_BOX(vbox),hbox_array[4],TRUE,TRUE,1);
+  button= gtk_button_new_with_label("AQUI SOME");
+  gtk_box_pack_start(GTK_BOX(vbox),button,TRUE,TRUE,1);
+
+  g_signal_connect(G_OBJECT(button), "clicked",
+      G_CALLBACK(button_clicked), NULL);
+
+
+
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  list = gtk_tree_view_new();
+  gtk_container_add(GTK_CONTAINER(window),vbox);
 
   gtk_window_set_title(GTK_WINDOW(window), "List view");
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
   gtk_container_set_border_width(GTK_CONTAINER(window), 10);
   gtk_window_set_default_size(GTK_WINDOW(window), 270, 250);
 
-  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(list), FALSE);
-
-  vbox = gtk_vbox_new(FALSE, 0);
-
-  gtk_box_pack_start(GTK_BOX(vbox), list, TRUE, TRUE, 5);
-
-  label = gtk_label_new("");
-  gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 5);
-
-  gtk_container_add(GTK_CONTAINER(window), vbox);
-
-  init_list(list);
-  add_to_list(list, "Aliens");
-  add_to_list(list, "Leon");
-  add_to_list(list, "The Verdict");
-  add_to_list(list, "North Face");
-  add_to_list(list, "Der Untergang");
-  add_to_list(list, "Der Untergang");
-
-  add_to_list(list, "Der Untergang");
-
-  add_to_list(list, "Der Untergang");
-
-  add_to_list(list, "Der Untergang");
-
-  add_to_list(list, "Der Untergang");
-
-  add_to_list(list, "Der Untergang");
-
-  add_to_list(list, "Der Untergang");
-
-  add_to_list(list, "Der Untergang");
-
-  add_to_list(list, "Der Untergang");
-
-  add_to_list(list, "Der Untergang");
-
-  add_to_list(list, "Der Untergang");
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-add_to_list(list, "Der Untergang");
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-
-add_to_list(list, "Der Untergang");
-
-
-
-  selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(list));
-
-  g_signal_connect(selection, "changed",
-      G_CALLBACK(on_changed), label);
-
-  g_signal_connect(G_OBJECT (window), "destroy",
-      G_CALLBACK(gtk_main_quit), NULL);
-
   gtk_widget_show_all(window);
-
   gtk_main();
 
   return 0;

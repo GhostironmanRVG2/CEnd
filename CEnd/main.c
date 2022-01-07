@@ -6,6 +6,7 @@
 #include "Structed.c"
 #include "InfoWindow.c"
 #include "SizeWindow.c"
+#include "FilterWindow.c"
 GdkPixbuf *create_pixbuf(const gchar * filename) {
 
    GdkPixbuf *pixbuf;
@@ -43,6 +44,8 @@ int main( int argc, char *argv[])
     parking ***parque;
     parque_widgets **widgets_array;
     GtkWidget **hbox_array;
+    GtkWidget *label_piso;
+    GtkWidget *historico_button;
     int posi;
     FILE *file;
     //LER DADOS RELATIVOS AO TAMANHO DO PARQUE
@@ -148,6 +151,7 @@ void show_sucess() {
     gtk_widget_hide(windowPrincipal);
     //GUARDAR A MATRICULA
     strcpy(matricula,input(argc,argv));
+
     if(Find_car(matricula,parque)!=0){
     //SE O GET DA MATRICULA NAO FOR ERROR ESTACIONAMOS
     if(strcmp(matricula,"ERROR")){
@@ -167,7 +171,9 @@ void show_sucess() {
     //VERIFICAR SE O AQUI E O COMPARAR SAO IGUAIS..SE FOREM ACABA AQUI O LOOP E DEVOLVE Linha e Coluna
     if(!(strcmp(registo_aqui,registo_comparar))){
     //ESTACIONAR
-    Estacionar(posi,l,c,matricula,3,parque);
+    char verificada[9];
+    snprintf(verificada,9,"%s",matricula);
+    Estacionar(posi,l,c,verificada,3,parque);
     //SETAR IMAGEM NESSA POSICAO
     gtk_image_set_from_file(widgets_array[l][c].imagem,"estacionado.png");
     //SETAR NOME DA IMAGEM PARA UM WIDGET ESTACIONADO
@@ -175,8 +181,8 @@ void show_sucess() {
     //MUDAR O NOME DO BUTTON
     gtk_button_set_label(widgets_array[l][c].button,"INFO");
     //MUDAR O LABEL
-    char str[29];
-    snprintf(str,29,"[%d][%d][%d]MATRICULA: %s",posi,l,c,parque[posi][l][c].veiculo.matricula);
+    char str[30];
+    snprintf(str,30,"[%d][%d][%d]MATRICULA: %s",posi,l,c,parque[posi][l][c].veiculo.matricula);
     gtk_frame_set_label(widgets_array[l][c].frame,str);
     //TORNAR A WINDOW VISIVEL
     gtk_widget_show(windowPrincipal);
@@ -357,7 +363,7 @@ char registo_comparar[10];
     char str[10];
     snprintf(str,10,"[%d][%d][%d]",posi,l,c);
     gtk_frame_set_label(widgets_array[l][c].frame,str);
-    snprintf(price,40,"custo do estacionamento: %f",pagamento);
+    snprintf(price,30,"custo do estacionamento: %f",pagamento);
     show_price(price);
     break;
     }
@@ -379,6 +385,8 @@ show_error();
 
     /**FUNCAO AVANCAR**/
     void button_next(GtkWidget *widget, gpointer data) {
+    //STR DO LABEL
+    char str_label[20];
     //SETTAR A POSI
     posi+=1;
     //QUANDO VOLTA VOLTA AQUI MUDA O PISO
@@ -419,12 +427,20 @@ show_error();
     if(posi==piso-1){
      gtk_widget_hide(buttoned);
     }
+    //MUDAR LABEL DO PISO
+    if(posi-10<0){
+    snprintf(str_label,20,"PISO\n   %d",posi);
+    }else{
+    snprintf(str_label,20,"PISO\n  %d",posi);
+    }
+    gtk_label_set_text(label_piso,str_label);
 
     }
 
     /**FUNCAO RECUAR**/
     void button_prev(GtkWidget *widget, gpointer data){
-
+   //CHAR DO LABEL
+    char str_label[20];
     //SETTAR A POSI
     posi-=1;
     //QUANDO VOLTA VOLTA AQUI MUDA O PISO
@@ -437,6 +453,7 @@ show_error();
     {
     /**CRIAR LABEL PERSONALIZADO**/
     char str[30];
+
      //AVERIGUAR OS LUGARES CONSOANTE O RECUO
     if(!(strlen(parque[posi][l][c].veiculo.matricula)>7)){
     //CONTINUACAO LABEL PERSONALIZADO
@@ -448,6 +465,7 @@ show_error();
     gtk_image_set_from_file(widgets_array[l][c].imagem,"parking-lot.png");
     //DAR UM NOME NA IMAGEM
     gtk_widget_set_name(widgets_array[l][c].event_box,"p");
+
     }else{
     //CONTINUACAO LABEL PERSONALIZADO
     snprintf(str,30,"[%d][%d][%d]MATRICULA: %s",posi,l,c,parque[posi][l][c].veiculo.matricula);
@@ -469,7 +487,21 @@ show_error();
     if(posi==piso-2){
     gtk_widget_show(buttoned);
     }
+    //ALTERAR O PISO
+    snprintf(str_label,20,"PISO\n   %d",posi);
+    gtk_label_set_text(label_piso,str_label);
 
+    }
+
+
+/**FUNCAO AVANCAR**/
+void button_historic(GtkWidget *widget, gpointer data) {
+    //POR A JANELA PRINCIPAL INVISIVEL
+    gtk_widget_hide(windowPrincipal);
+    //PROCEDER Á FUNCAO DA JANELA DO HISTORICO
+    FilterW(argc,argv);
+    //TORNAR O WIDGET VISIVEL
+    gtk_widget_show(windowPrincipal);
 
     }
 
@@ -571,20 +603,32 @@ for(int i=0;i<linha+1;i++){
     /**EMPACOTAR**/
     gtk_box_pack_start(GTK_BOX(vbox),hbox_array[i],FALSE,FALSE,1);
     /**CRIAR BUTTON**/
-    button=gtk_button_new_with_label("PREV");
+    button=gtk_button_new_with_label("ANTERIOR");
     /**CRIAR OUTRO BUTTON**/
-    buttoned=gtk_button_new_with_label("NEXT");
+    buttoned=gtk_button_new_with_label("SEGUINTE");
+    /**CRIAR BUTTON**/
+    historico_button=gtk_button_new_with_label("HISTORICO");
     /**DAR-LHE UM NOME PARA O CSS**/
     gtk_widget_set_name(button,"button");
     /**DAR-LHE UM NOME PARA O CSS**/
     gtk_widget_set_name(buttoned,"button");
+    /**DAR-LHE UM NOME PARA O CSS**/
+    gtk_widget_set_name(historico_button,"button_h");
     /**FUNCOES DOS BOTOES**/
     g_signal_connect(G_OBJECT(button), "clicked",
       G_CALLBACK(button_prev), NULL);
     g_signal_connect(G_OBJECT(buttoned), "clicked",
       G_CALLBACK(button_next), NULL);
+    g_signal_connect(G_OBJECT(historico_button), "clicked",
+      G_CALLBACK(button_historic), NULL);
+    //label
+    label_piso=gtk_label_new("PISO\n   0");
+    gtk_widget_set_name(label_piso,"label_piso");
+
     /**EMPACOTAR**/
     gtk_box_pack_start(GTK_BOX(hbox_array[i]),button,FALSE,FALSE,1);
+    gtk_box_pack_start(GTK_BOX(hbox_array[i]),label_piso,FALSE,FALSE,1);
+    gtk_box_pack_start(GTK_BOX(hbox_array[i]),historico_button,FALSE,FALSE,1);
     gtk_box_pack_start(GTK_BOX(hbox_array[i]),buttoned,FALSE,FALSE,1);
 
     }else{

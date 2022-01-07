@@ -6,7 +6,7 @@ int piso,linha,coluna;
 typedef struct carro{
 //ALO
 //MATRICULA
-char matricula[7];
+char matricula[9];
 //TIPO VIATURA(0 - Deficientes, 1 - Carro, 2 - Caravanas, 3- Autocarro&Camioes, 4 - Helicopteros)
 int tipo_de_veiculo;
 //nmr lavagens
@@ -106,17 +106,18 @@ void Pagamento(int p , int l ,int c,parking ***parque){
     float pagamento=2.50;
 
     //TOTAL DE HORAS PASSADAS
-    ano = (float)parque[p][l][c].saida.year_saida - (float)parque[p][l][c].entrada.year_chegada;
+    ano = parque[p][l][c].saida.year_saida - parque[p][l][c].entrada.year_chegada;
     //TOTAL DE MESES PASSADOS
-    mes = (float)parque[p][l][c].saida.month_saida - (float)parque[p][l][c].entrada.month_chegada;
+    mes = parque[p][l][c].saida.month_saida - parque[p][l][c].entrada.month_chegada;
     //TOTAL DE DIAS PASSADOS
-    dia = (float)parque[p][l][c].saida.day_saida - (float)parque[p][l][c].entrada.day_chegada;
+    dia = parque[p][l][c].saida.day_saida - parque[p][l][c].entrada.day_chegada;
     //TOTAL DE HORAS PASSADOS
-    horas = (float)parque[p][l][c].saida.day_saida - (float)parque[p][l][c].entrada.day_chegada;
+    horas = parque[p][l][c].saida.hours_saida - parque[p][l][c].entrada.hours_chegada;
     //TOTAL DE MINUTOS PASSADOS
-    min = (float)parque[p][l][c].saida.day_saida - (float)parque[p][l][c].entrada.day_chegada;
+    min = parque[p][l][c].saida.minutes_saida - parque[p][l][c].entrada.minutes_chegada;
+
     //DETERMINAMOS O NUMERO TOTAL DE HORAS E MULTIPLACAMOS PELO TOTAL A PAGAR
-    total = (ano * 8760) + (mes * 744) + (dia * 24) + horas + (min / 60);
+    total = (float)(ano * 8760) + (float)(mes * 744) + (float)(dia * 24) + (float)horas + (float)(min / 60);
 
     //NUMERO DE HORAS VS O PREÇO À HORA DO RESPETIVO TIPO DE VEICULO
     total = total * pagamento;

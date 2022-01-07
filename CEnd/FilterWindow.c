@@ -1,45 +1,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
-#include <ctype.h>
-#include <errno.h>
-
-int verifymatric(char matric[]){
-        int lenght =strnlen(matric,8);
-        //VERIFICAR SE OS CARACTERES SAO MAISCULOS
-if(
-(  (   (((int)matric[0]-48)<=9)&&( ((int)matric[0]-48)>=0)  ) ||   (   (((int)matric[0]-48)<=42)&&( ((int)matric[0]-48)>=17)  )               ) //POS 0 SEM CARACTERES ESTRANHOS
-&&
-(  (   (((int)matric[1]-48)<=9)&&( ((int)matric[1]-48)>=0)  ) ||   (   (((int)matric[1]-48)<=42)&&( ((int)matric[1]-48)>=17)  )  )//POS 1 SEM C.E
-&&
-(                    (  ((int)matric[5]-48) ==-3)                )//POS 2 COM C.E
-&&
-(  (   (((int)matric[3]-48)<=9)&&( ((int)matric[3]-48)>=0)  ) ||   (   (((int)matric[3]-48)<=42)&&( ((int)matric[3]-48)>=17)  )   )//POS 3 SEM C.E
-&&
-(  (   (((int)matric[4]-48)<=9)&&( ((int)matric[4]-48)>=0)  ) ||   (   (((int)matric[4]-48)<=42)&&( ((int)matric[4]-48)>=17)  )   )//POS 4 SEM C.E
-&&
-(                    (  ((int)matric[5]-48) ==-3)               )//POS 5 COM C.E
-&&
-(   (   (((int)matric[6]-48)<=9)&&( ((int)matric[6]-48)>=0)  ) ||   (   (((int)matric[6]-48)<=42)&&( ((int)matric[6]-48)>=17)  )  )//POS 6 SEM C.E
-&&
-(   (   (((int)matric[7]-48)<=9)&&( ((int)matric[7]-48)>=0)  ) ||   (   (((int)matric[7]-48)<=42)&&( ((int)matric[7]-48)>=17)  )     )//POS 7 SEM C.E
-&&
-(lenght==8)
-){
-
-return 1;
-
-}else{
-
-return 0;
-
-}
-
-
-
-
-}
 /**FUNCAO INPUT*/
-char* input(int argc, char** argv){
+FilterW(int argc, char** argv){
 /**FUNCAO PARA VERIFICAR MATRICULA**/
 
 /**FUNCAO PARA CRIAR ICON**/
@@ -108,6 +70,10 @@ i=1;
 //CASO DE ERRO ENVIAR MATRICULA COM ERRO
 show_error();
 }
+}else if(gtk_entry_get_text_length(input_widget)==0){
+
+gtk_widget_destroy(windowInput);
+
 }else{
 //CASO DE ERRO ENVIAR MATRICULA COM ERRO
 show_error();
@@ -175,7 +141,7 @@ hbox_button=gtk_hbox_new(TRUE,0);
 /**INSERIR A HBOX NO VBOX**/
 gtk_box_pack_start(GTK_BOX(vbox),hbox_button,FALSE,FALSE,0);
 /**CRIAR BUTTON**/
-button=gtk_button_new_with_label("ESTACIONAR");
+button=gtk_button_new_with_label("PROCURAR");
 /**COLOCA-LO NA TERCEIRA BOX**/
 gtk_box_pack_start(GTK_BOX(hbox_button),button,FALSE,FALSE,0);
 /**ADICIONAR UM EVENTO ASSOCIADO AO BOTAO**/
@@ -193,11 +159,5 @@ g_signal_connect(windowInput, "destroy",
 gtk_widget_show_all(windowInput);
 /**FECHAR O PROGRAMA*/
 gtk_main();
-//ERROR HANDLING
-if(i==1){
-return m;
-}else{
-return "ERROR";
-}
 
 }

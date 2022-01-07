@@ -6,7 +6,7 @@ label#title {
 }
 button{
 background-image: none;
-background-color: #555555; /* Green */
+background-color: #555555;
   border: none;
   color: white;
   text-decoration: none;
@@ -15,7 +15,7 @@ background-color: #555555; /* Green */
 }
 button#button{
 background-image: none;
-background-color: #555555; /* Green */
+background-color: #555555;
   border: none;
   color: white;
   text-decoration: none;
@@ -25,4 +25,19 @@ background-color: #555555; /* Green */
 frame#frame{
 	color: white;
 	font-weight: bold;
+}
+label#label_piso {
+  font-family: "Open Sans", sans-serif;
+  font-size: 30px;
+  color: white;
+  font-weight: bold;
+}
+button#button_h{
+background-image: none;
+background-color: #D1CD5D;
+  border: none;
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 30px 40px;
 }

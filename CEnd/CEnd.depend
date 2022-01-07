@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1641056725 source:c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\main.c
+1641585954 source:c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\main.c
 	<stdio.h>
 	<stdlib.h>
 	<gtk/gtk.h>
@@ -8,6 +8,7 @@
 	"Structed.c"
 	"InfoWindow.c"
 	"SizeWindow.c"
+	"FilterWindow.c"
 
 1632553837 c:\msys64\mingw64\include\gtk-3.0\gtk\gtk.h
 	<gdk/gdk.h>
@@ -3017,14 +3018,16 @@
 
 1632553837 c:\msys64\mingw64\include\gtk-3.0\gtk\gtk-autocleanups.h
 
-1640353309 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\structed.c
+1641580890 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\structed.c
 	<gtk/gtk.h>
 
-1640619379 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\inputwindow.c
+1641572860 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\inputwindow.c
 	<gtk/gtk.h>
 	<string.h>
+	<ctype.h>
+	<errno.h>
 
-1641056660 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\parking.c
+1641585902 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\parking.c
 	<stdio.h>
 	<string.h>
 	<time.h>
@@ -3034,6 +3037,10 @@
 	<string.h>
 
 1640620073 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\sizewindow.c
+	<gtk/gtk.h>
+	<string.h>
+
+1641579607 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\filterwindow.c
 	<gtk/gtk.h>
 	<string.h>
 
