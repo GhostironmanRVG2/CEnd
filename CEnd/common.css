@@ -41,3 +41,9 @@ background-color: #D1CD5D;
   font-size: 16px;
   padding: 30px 40px;
 }
+label#label_rows {
+  font-family: "Open Sans", sans-serif;
+  font-size: 15px;
+  color: white;
+  font-weight: bold;
+}

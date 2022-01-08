@@ -62,17 +62,24 @@ strcpy(matricula,gtk_entry_get_text(input_widget));
 int isit=verifymatric(matricula);
 if(isit){
 /**CASO DE CERTO**/
-gtk_widget_destroy(windowInput);
-strcpy(m,matricula);
-//CODIGO DE OK
-i=1;
+//POR INVISIVEL ESTA JANELA
+gtk_widget_hide(windowInput);
+//CRIAR PROX JANELA
+historic(argc,argv,matricula);
+//TORNAR VISIVEL
+gtk_widget_show(windowInput);
 }else{
 //CASO DE ERRO ENVIAR MATRICULA COM ERRO
 show_error();
 }
 }else if(gtk_entry_get_text_length(input_widget)==0){
 
-gtk_widget_destroy(windowInput);
+//POR INVISIVEL ESTA JANELA
+gtk_widget_hide(windowInput);
+//CRIAR PROX JANELA
+historic(argc,argv,"NON");
+//TORNAR VISIVEL
+gtk_widget_show(windowInput);
 
 }else{
 //CASO DE ERRO ENVIAR MATRICULA COM ERRO

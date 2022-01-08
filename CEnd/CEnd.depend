@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1641585954 source:c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\main.c
+1641600869 source:c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\main.c
 	<stdio.h>
 	<stdlib.h>
 	<gtk/gtk.h>
@@ -9,6 +9,7 @@
 	"InfoWindow.c"
 	"SizeWindow.c"
 	"FilterWindow.c"
+	"HistoricView.c"
 
 1632553837 c:\msys64\mingw64\include\gtk-3.0\gtk\gtk.h
 	<gdk/gdk.h>
@@ -3027,7 +3028,7 @@
 	<ctype.h>
 	<errno.h>
 
-1641585902 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\parking.c
+1641597811 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\parking.c
 	<stdio.h>
 	<string.h>
 	<time.h>
@@ -3040,7 +3041,11 @@
 	<gtk/gtk.h>
 	<string.h>
 
-1641579607 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\filterwindow.c
+1641600823 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\filterwindow.c
 	<gtk/gtk.h>
 	<string.h>
+
+1641602771 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\historicview.c
+	<stdio.h>
+	<gtk/gtk.h>
 

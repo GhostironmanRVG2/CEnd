@@ -2,6 +2,7 @@
 #include <string.h>
 #include <time.h>
 int piso,linha,coluna;
+int size_historico;
 //STRUCT CARRO
 typedef struct carro{
 //ALO
@@ -54,7 +55,7 @@ typedef struct parking
 
 //DECLARAR FUNCAO QUE LEVA ARRAY
 void Estacionar(int p, int l ,int c, char m[], int t, parking ***parque);
-float Destacionar(int p, int l, int c,int count,parking ***parque,parking historico[]);
+float Destacionar(int p, int l, int c,int count,parking ***parque);
 void Pagamento(int p, int l ,int c,parking ***parque);
 void Lavagem(int p, int l, int c, parking ***parque);
 int L_livres(parking ***parque);
@@ -128,9 +129,9 @@ void Pagamento(int p , int l ,int c,parking ***parque){
 
 
 //FUNCAO PARA SETAR OS DADOS
-float Destacionar(int p , int l ,int c,int count, parking ***parque,parking historico[]){
+float Destacionar(int p , int l ,int c,int count, parking ***parque){
 //DAR ASIGN DOS VALORES COM PISO,LINHA E COLUNA FORNECIDOS CONSOANTE O QUE O UTILIZADOR CLICA NA FRONT-END
-    strcpy(parque[p][l][c].veiculo.matricula,"");
+    parque[p][l][c].veiculo.matricula[0]=0;
     //MUDAR O ESTADO SIMPLESMENTE PARA DESTACIONADO
     parque[p][l][c].estado=0;
     //INICIALIZAR DADOS DE TIME PARA SABER A DATA ATUAL
@@ -152,8 +153,6 @@ float Destacionar(int p , int l ,int c,int count, parking ***parque,parking hist
 
     //INICIALIZAR FUNCAO PAGAMENTO COM PARAMETROS , DATA DE CHEGADA E DATA DE SAIDA;ARMAZENAR NA ABA "PAGAMENTO"
     Pagamento(p,l,c,parque);
-    //COLOCAR O OBJETO NO HISTORICO
-    historico[count]=parque[p][l][c];
     //retornar o pagamento
     return parque[p][l][c].veiculo.pagamento;
 }

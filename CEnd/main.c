@@ -7,6 +7,8 @@
 #include "InfoWindow.c"
 #include "SizeWindow.c"
 #include "FilterWindow.c"
+#include "HistoricView.c"
+#include "Receive.c"
 GdkPixbuf *create_pixbuf(const gchar * filename) {
 
    GdkPixbuf *pixbuf;
@@ -47,13 +49,20 @@ int main( int argc, char *argv[])
     GtkWidget *label_piso;
     GtkWidget *historico_button;
     int posi;
+    size_historico=0;
     FILE *file;
+    //LER DADOS RELATIVOS AO HISTORICO
+    file=fopen("size_historic","rb");
+    fscanf(file,"size_historico=%d\n",&size_historico);
+    fclose(file);
+
     //LER DADOS RELATIVOS AO TAMANHO DO PARQUE
     file=fopen("size","rb");
     //LER
     fscanf(file,"piso=%d\n",&piso);
     fscanf(file,"linha=%d\n",&linha);
     fscanf(file,"coluna=%d\n",&coluna);
+    fscanf(file,"size_historico=%d\n",&size_historico);
     fclose(file);
     //CASO ESTES VALORES SEJAM ZERO!!!
     if(piso==0|linha==0|coluna==0){
@@ -95,16 +104,6 @@ int main( int argc, char *argv[])
       parque[p][l] = (parking *) malloc(sizeof(parking)*coluna);
     }
   }
-
-
-
-
-    /**INICIALIZAR HISTORICO**/
-    parking historico[40];
-
-
-
-
 
     /**DIALOG WINDOW**/
 void show_error_duplicated() {
@@ -188,6 +187,52 @@ void show_sucess() {
     gtk_widget_show(windowPrincipal);
     //MSG DE SUCESSO
     show_sucess();
+    //FILE APPEND
+    file=fopen("historic","a");
+    if(file==NULL){
+    printf("\nERROR");
+    }
+    //ESCREVER OS DADOS NO FILE
+    fprintf(file,"day_chegada:%dhours_chegada:%dminutes_chegada:%dmonth_chegada:%dsecounds_chegada:%dyear_chegada:%destado:%dday_saida:%dhours_saida:%dminutes_saida:%dmonth_saida:%dsecounds_saida:%dyear_saida:%dtipo:%dn_lavagens:%dpagamento:%ftipo_de_veiculo:%dm:%c%c%c%c%c%c%c%c\n",
+       parque[posi][l][c].entrada.day_chegada,
+       parque[posi][l][c].entrada.hours_chegada,
+       parque[posi][l][c].entrada.minutes_chegada,
+       parque[posi][l][c].entrada.month_chegada,
+       parque[posi][l][c].entrada.secounds_chegada,
+       parque[posi][l][c].entrada.year_chegada,
+
+       parque[posi][l][c].estado,
+
+       parque[posi][l][c].saida.day_saida,
+       parque[posi][l][c].saida.hours_saida,
+       parque[posi][l][c].saida.minutes_saida,
+       parque[posi][l][c].saida.month_saida,
+       parque[posi][l][c].saida.secounds_saida,
+       parque[posi][l][c].saida.year_saida,
+
+       parque[posi][l][c].tipo,
+
+       parque[posi][l][c].veiculo.n_lavagens,
+       parque[posi][l][c].veiculo.pagamento,
+       parque[posi][l][c].veiculo.tipo_de_veiculo,
+       parque[posi][l][c].veiculo.matricula[0],
+        parque[posi][l][c].veiculo.matricula[1],
+        parque[posi][l][c].veiculo.matricula[2],
+        parque[posi][l][c].veiculo.matricula[3],
+        parque[posi][l][c].veiculo.matricula[4],
+        parque[posi][l][c].veiculo.matricula[5],
+        parque[posi][l][c].veiculo.matricula[6],
+        parque[posi][l][c].veiculo.matricula[7]
+
+            );
+
+   fclose(file);
+
+
+    //AUMENTAR TAMANHO DO HISTORICO
+    size_historico+=1;
+
+
     break;
     }
 
@@ -309,28 +354,11 @@ void show_error() {
 
 
 
-    /**DIALOG WINDOW**/
-void show_price(char price[]) {
-  GtkWidget *dialog;
-  dialog = gtk_message_dialog_new(GTK_WINDOW(windowPrincipal),
-            GTK_DIALOG_DESTROY_WITH_PARENT,
-            GTK_MESSAGE_ERROR,
-            GTK_BUTTONS_OK,
-            price);
-  gtk_window_set_position(dialog,GTK_WIN_POS_CENTER_ALWAYS);
-  gtk_window_set_title(GTK_WINDOW(dialog), "Warning!");
-  gtk_dialog_run(GTK_DIALOG(dialog));
-  gtk_widget_destroy(dialog);
-}
-
-
-
-
 
     /**FUNCAO DESTACIONAR**/
     //FUNCAO PARA CASO O BOTAO SEJA CLICAVEL
 void image_clicked(GtkWidget *widget, gpointer data) {
-
+char matricula[10];
 //VERIFICAR TYPES DAS IMAGENS PELO EVENT BOX
 if(!(strcmp(gtk_widget_get_name(widget),"e"))){
 //CASO ESTEJA ESTACIONADO EFETUAR DESTACIONAR
@@ -353,8 +381,53 @@ char registo_comparar[10];
     //VERIFICAR SE O AQUI E O COMPARAR SAO IGUAIS..SE FOREM ACABA AQUI O LOOP E DEVOLVE Linha e Coluna
     if(!(strcmp(registo_aqui,registo_comparar))){
     char price[30];
+    //ESCREVER OS DADOS NO FILE
+      //FILE APPEND
+    file=fopen("historic","a");
+    if(file==NULL){
+    printf("\nERROR");
+    }
+     //GET DOS DADOS
+    strcpy(matricula,parque[posi][l][c].veiculo.matricula);
+    //SETAR ESTADO ANTES DE COLOCAR OS DADOS DENTRO
+    parque[posi][l][c].estado=0;
+    fprintf(file,"day_chegada:%dhours_chegada:%dminutes_chegada:%dmonth_chegada:%dsecounds_chegada:%dyear_chegada:%destado:%dday_saida:%dhours_saida:%dminutes_saida:%dmonth_saida:%dsecounds_saida:%dyear_saida:%dtipo:%dn_lavagens:%dpagamento:%ftipo_de_veiculo:%dm:%c%c%c%c%c%c%c%c\n",
+       parque[posi][l][c].entrada.day_chegada,
+       parque[posi][l][c].entrada.hours_chegada,
+       parque[posi][l][c].entrada.minutes_chegada,
+       parque[posi][l][c].entrada.month_chegada,
+       parque[posi][l][c].entrada.secounds_chegada,
+       parque[posi][l][c].entrada.year_chegada,
+
+       parque[posi][l][c].estado,
+
+       parque[posi][l][c].saida.day_saida,
+       parque[posi][l][c].saida.hours_saida,
+       parque[posi][l][c].saida.minutes_saida,
+       parque[posi][l][c].saida.month_saida,
+       parque[posi][l][c].saida.secounds_saida,
+       parque[posi][l][c].saida.year_saida,
+
+       parque[posi][l][c].tipo,
+
+       parque[posi][l][c].veiculo.n_lavagens,
+       parque[posi][l][c].veiculo.pagamento,
+       parque[posi][l][c].veiculo.tipo_de_veiculo,
+       parque[posi][l][c].veiculo.matricula[0],
+        parque[posi][l][c].veiculo.matricula[1],
+        parque[posi][l][c].veiculo.matricula[2],
+        parque[posi][l][c].veiculo.matricula[3],
+        parque[posi][l][c].veiculo.matricula[4],
+        parque[posi][l][c].veiculo.matricula[5],
+        parque[posi][l][c].veiculo.matricula[6],
+        parque[posi][l][c].veiculo.matricula[7]
+
+            );
+    fclose(file);
+    //AUMENTAR TAMANHO DO HISTORICO
+    size_historico+=1;
     //DESTACIONAR E RECEBER PAGAMENTO
-    float pagamento=Destacionar(posi,l,c,0,parque,historico);
+    float pagamento=Destacionar(posi,l,c,0,parque);
     //SETAR IMAGEM NESSA POSICAO
     gtk_image_set_from_file(widgets_array[l][c].imagem,"parking-lot.png");
     //MUDAR O NOME DO BUTTON
@@ -363,8 +436,60 @@ char registo_comparar[10];
     char str[10];
     snprintf(str,10,"[%d][%d][%d]",posi,l,c);
     gtk_frame_set_label(widgets_array[l][c].frame,str);
-    snprintf(price,30,"custo do estacionamento: %f",pagamento);
-    show_price(price);
+
+    char tipo[6];
+    int dia_e;
+    int mes_e;
+    int ano_e;
+    int horas_e;
+    int min_e;
+    int sec_e;
+    int dia_s;
+    int mes_s;
+    int ano_s;
+    int horas_s;
+    int min_s;
+    int sec_s;
+
+
+    //HIDE DA JANELA
+    gtk_widget_hide(windowPrincipal);
+    //TIPO DE CARRO
+    strcpy(tipo,"CARRO");
+    //dia entrada
+    dia_e=parque[posi][l][c].entrada.day_chegada;
+    //mes entrada
+    mes_e=parque[posi][l][c].entrada.month_chegada;
+    //ano entrada
+    ano_e=parque[posi][l][c].entrada.year_chegada;
+    //horas entrada
+    horas_e=parque[posi][l][c].entrada.hours_chegada;
+    //minutos entrada
+    min_e=parque[posi][l][c].entrada.minutes_chegada;
+    //sec entrada
+    sec_e=parque[posi][l][c].entrada.secounds_chegada;
+
+
+
+    //dia saida
+    dia_s=parque[posi][l][c].saida.day_saida;
+    //mes saida
+    mes_s=parque[posi][l][c].saida.month_saida;
+    //ano saida
+    ano_s=parque[posi][l][c].saida.year_saida;
+    //horas saida
+    horas_s=parque[posi][l][c].saida.hours_saida;
+    //minutos saida
+    min_s=parque[posi][l][c].saida.minutes_saida;
+    //sec saida
+    sec_s=parque[posi][l][c].saida.secounds_saida;
+
+    char pag[20];
+    sprintf(pag, "%.2f", pagamento);
+    Receive(argc,argv,matricula,dia_e,mes_e,ano_e,horas_e,min_e,sec_e,pag,dia_s,mes_s,ano_s,horas_s,min_s,sec_s);
+    gtk_widget_show(windowPrincipal);
+
+
     break;
     }
 
@@ -686,7 +811,7 @@ for(int i=0;i<linha+1;i++){
     gtk_container_add(GTK_CONTAINER(widgets_array[l][c].event_box),widgets_array[l][c].imagem);
     //CRIAR EVENTO E ASSOCIAR A UMA FUNCAO
     g_signal_connect(G_OBJECT(widgets_array[l][c].event_box), "button_press_event",
-      G_CALLBACK(image_clicked), NULL);
+    G_CALLBACK(image_clicked), NULL);
     /**BUTTONS**/
     //ESTACIONAR
     if(!(strlen(parque[0][l][c].veiculo.matricula)>7)){
@@ -774,5 +899,17 @@ gtk_main();
   fclose(file);
 
 
+
+   //ARMAZENAR ESTES DADOS NUM TXT
+    file=fopen("size_historic","wb");
+    if(file==NULL){
+
+    printf("\nERROR");
+    exit(1);
+    }
+    //ESCREVER OS DADOS NO FILE
+    fprintf(file,"size_historico=%d\n",size_historico);
+
+    fclose(file);
 }
 
