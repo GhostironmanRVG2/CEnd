@@ -3,55 +3,60 @@
 #include <time.h>
 int piso,linha,coluna;
 int size_historico;
+
+
 //STRUCT CARRO
 typedef struct carro{
-//ALO
-//MATRICULA
-char matricula[9];
-//TIPO VIATURA(0 - Deficientes, 1 - Carro, 2 - Caravanas, 3- Autocarro&Camioes, 4 - Helicopteros)
-int tipo_de_veiculo;
-//nmr lavagens
-int n_lavagens;
-//pagamento
-float pagamento;
+    //MATRICULA
+    char matricula[9];
+    //TIPO VIATURA(0 - Deficientes, 1 - Carro, 2 - Caravanas, 3- Autocarro&Camioes, 4 - Helicopteros)
+    int tipo_de_veiculo;
+    //nmr lavagens
+    int n_lavagens;
+    //pagamento
+    float pagamento;
 }car;
 
+
 typedef struct data_entrada{
-    //DATA CHEGADA
- int year_chegada;
- int month_chegada;
- int day_chegada;
- int hours_chegada;
- int minutes_chegada;
- int secounds_chegada;
+        //DATA CHEGADA
+     int year_chegada;
+     int month_chegada;
+     int day_chegada;
+     int hours_chegada;
+     int minutes_chegada;
+     int secounds_chegada;
 
 }data_entrada;
 
+
 typedef struct data_saida{
- //DATA SAIDA
- int year_saida;
- int month_saida;
- int day_saida;
- int hours_saida;
- int minutes_saida;
- int secounds_saida;
+     //DATA SAIDA
+     int year_saida;
+     int month_saida;
+     int day_saida;
+     int hours_saida;
+     int minutes_saida;
+     int secounds_saida;
 
 }data_saida;
+
 
 //OBJETO PARKING QUE VAI SER ARMAZENADO NUM ARRAY TRIDIMENCIONAL
 typedef struct parking
 {
-//CARRO
- car veiculo;
- //DATA ENTRADA
- data_entrada entrada;
- //DATA SAIDA
- data_saida saida;
- //ESTADO 0=LIVRE 1=OCUPADO
- int estado;
-//TIPO VIATURA(0 - Deficientes, 1 - Carro, 2 - Caravanas, 3 - Autocarro&Camioes, 4 - Helicopteros)
- int tipo;
+    //CARRO
+     car veiculo;
+     //DATA ENTRADA
+     data_entrada entrada;
+     //DATA SAIDA
+     data_saida saida;
+     //ESTADO 0=LIVRE 1=OCUPADO
+     int estado;
+    //TIPO VIATURA(0 - Deficientes, 1 - Carro, 2 - Caravanas, 3 - Autocarro&Camioes, 4 - Helicopteros)
+     int tipo;
 }parking;
+
 
 //DECLARAR FUNCAO QUE LEVA ARRAY
 void Estacionar(int p, int l ,int c, char m[], int t, parking ***parque);
@@ -64,18 +69,19 @@ int Find_lugar(char m[], parking ***parque);
 int Find_car(char m[], parking ***parque);
 //DECLARAR O TAMANHO DO ARRAY PARQUE
 void setTamanho(int p,int l,int c){
- piso=p;
- linha=l;
- coluna=c;
+    piso=p;
+    linha=l;
+    coluna=c;
 }
+
 
 //FUNCAO PARA SETAR OS DADOS
 void Estacionar(int p , int l ,int c,char m[], int t, parking ***parque){
-//INICIALIZAR DADOS DE TIME
-time_t now;
-time(&now);
-struct tm *local = localtime(&now);
-//DAR ASIGN DOS VALORES COM PISO,LINHA E COLUNA FORNECIDOS CONSOANTE O QUE O UTILIZADOR CLICA NA FRONT-END
+    //INICIALIZAR DADOS DE TIME
+    time_t now;
+    time(&now);
+    struct tm *local = localtime(&now);
+    //DAR ASIGN DOS VALORES COM PISO,LINHA E COLUNA FORNECIDOS CONSOANTE O QUE O UTILIZADOR CLICA NA FRONT-END
 
     //PEGAR NA STRING MATRICULA E COLA-LA NA POSICAO INDICADA NO PARAMETRO MATRICULA
     strcpy(parque[p][l][c].veiculo.matricula,m);
@@ -215,66 +221,53 @@ int L_ocupados(parking ***parque){
 //FUNÇÃO PARA PROCURAR UMA MATRICULA
 int Find_car(char m[], parking ***parque){
     int valor=1;
-
-        for (int p = 0; p <piso; p++)
-{
-    //QUANDO VOLTA VOLTA AQUI MUDA O PISO
-    int l=0;
-    for (l;l<linha;l++)
-    {
-    //LINHA
-    int c=0;
-
-    for (c;c<coluna;c++)
-    {
-     //VERIFICAR SE HÁ MATRICULAS IGUAIS
-     if(strcmp(m,parque[p][l][c].veiculo.matricula)==0){
-        valor=0;
-        break;
-     }
-
-    }
-    }
+    for (int p = 0; p <piso; p++){
+        //QUANDO VOLTA VOLTA AQUI MUDA O PISO
+        int l=0;
+        for (l;l<linha;l++){
+            //LINHA
+            int c=0;
+            for (c;c<coluna;c++){
+                //VERIFICAR SE HÁ MATRICULAS IGUAIS
+                if(strcmp(m,parque[p][l][c].veiculo.matricula)==0){
+                    valor=0;
+                    break;
+                }
+            }
+        }
     }
     return valor;
 }
 
 
 
-
-
-
 //FUNCAO DE INICIALIZAR
 void inicializar(int defs_number,int carv_number,int bus_number,int helicopter_number,parking ***parque){
-    for (int p = 0; p <piso; p++)
-{
-    //QUANDO VOLTA VOLTA AQUI MUDA O PISO
-    int l=0;
-    for (l;l<linha;l++)
-    {
-    //LINHA
-    int c=0;
-
-    for (c;c<coluna;c++)
-    {
-    parque[p][l][c].veiculo.matricula[0]=0;
-    parque[p][l][c].tipo=1;
-    parque[p][l][c].veiculo.n_lavagens=0;
-    parque[p][l][c].entrada.year_chegada=0;
-    parque[p][l][c].entrada.month_chegada=0;
-    parque[p][l][c].entrada.day_chegada=0;
-    parque[p][l][c].entrada.hours_chegada=0;
-    parque[p][l][c].entrada.minutes_chegada=0;
-    parque[p][l][c].entrada.secounds_chegada=0;
-    parque[p][l][c].saida.year_saida=0;
-    parque[p][l][c].saida.month_saida=0;
-    parque[p][l][c].saida.day_saida=0;
-    parque[p][l][c].saida.hours_saida=0;
-    parque[p][l][c].saida.minutes_saida=0;
-    parque[p][l][c].saida.secounds_saida=0;
-    parque[p][l][c].estado=2;
-    parque[p][l][c].veiculo.pagamento=0;
-}
-}
-}
+    for (int p = 0; p <piso; p++){
+        //QUANDO VOLTA VOLTA AQUI MUDA O PISO
+        int l=0;
+        for (l;l<linha;l++){
+            //LINHA
+            int c=0;
+            for (c;c<coluna;c++){
+                parque[p][l][c].veiculo.matricula[0]=0;
+                parque[p][l][c].tipo=1;
+                parque[p][l][c].veiculo.n_lavagens=0;
+                parque[p][l][c].entrada.year_chegada=0;
+                parque[p][l][c].entrada.month_chegada=0;
+                parque[p][l][c].entrada.day_chegada=0;
+                parque[p][l][c].entrada.hours_chegada=0;
+                parque[p][l][c].entrada.minutes_chegada=0;
+                parque[p][l][c].entrada.secounds_chegada=0;
+                parque[p][l][c].saida.year_saida=0;
+                parque[p][l][c].saida.month_saida=0;
+                parque[p][l][c].saida.day_saida=0;
+                parque[p][l][c].saida.hours_saida=0;
+                parque[p][l][c].saida.minutes_saida=0;
+                parque[p][l][c].saida.secounds_saida=0;
+                parque[p][l][c].estado=2;
+                parque[p][l][c].veiculo.pagamento=0;
+            }
+        }
+    }
 }

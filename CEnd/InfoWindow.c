@@ -140,7 +140,7 @@ void InfoWindow(int argc, char** argv,char matricula[],int dia,int mes,int ano,i
     gtk_widget_show_all(windowInfo);
 
     //CASO SEJA DESTRUIDA
-g_signal_connect(windowInfo, "destroy",
+    g_signal_connect(windowInfo, "destroy",
       G_CALLBACK(gtk_main_quit), NULL);
 
 

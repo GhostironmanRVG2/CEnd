@@ -42,7 +42,7 @@ int * SizeWindow(int argc, char** argv, int* pp) {
         return pp;
 
     }
-/**COLOCAR O INPUT DENTRO DE UM ARRAY DE CARACTERES**/
+    /**COLOCAR O INPUT DENTRO DE UM ARRAY DE CARACTERES**/
 
     GtkCssProvider *cssProvider = gtk_css_provider_new();
     //INICIALIZAR O PROGRAMA
@@ -144,7 +144,7 @@ int * SizeWindow(int argc, char** argv, int* pp) {
 
 
         //CASO SEJA DESTRUIDA
-g_signal_connect(windowSize, "destroy",
+    g_signal_connect(windowSize, "destroy",
       G_CALLBACK(gtk_main_quit), NULL);
 
     //MAIN
