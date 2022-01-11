@@ -327,8 +327,11 @@ int main( int argc, char *argv[]){
                             }
                             //GET DOS DADOS
                             strcpy(matricula,parque[posi][l][c].veiculo.matricula);
+                            //AUMENTAR TAMANHO DO HISTORICO
+                            size_historico+=1;
+                            //DESTACIONAR E RECEBER PAGAMENTO
+                            float pagamento=Destacionar(posi,l,c,0,parque);
                             //SETAR ESTADO ANTES DE COLOCAR OS DADOS DENTRO
-                            parque[posi][l][c].estado=0;
                             fprintf(file,"day_chegada:%dhours_chegada:%dminutes_chegada:%dmonth_chegada:%dsecounds_chegada:%dyear_chegada:%destado:%dday_saida:%dhours_saida:%dminutes_saida:%dmonth_saida:%dsecounds_saida:%dyear_saida:%dtipo:%dn_lavagens:%dpagamento:%ftipo_de_veiculo:%dm:%c%c%c%c%c%c%c%c\n",
                             parque[posi][l][c].entrada.day_chegada,
                             parque[posi][l][c].entrada.hours_chegada,
@@ -361,10 +364,8 @@ int main( int argc, char *argv[]){
                             parque[posi][l][c].veiculo.matricula[7]);
 
                             fclose(file);
-                            //AUMENTAR TAMANHO DO HISTORICO
-                            size_historico+=1;
-                            //DESTACIONAR E RECEBER PAGAMENTO
-                            float pagamento=Destacionar(posi,l,c,0,parque);
+                            //SETTAR A STRING DA MATRICULA COMO NULL
+                            parque[posi][l][c].veiculo.matricula[0]='\0';
                             //SETAR IMAGEM NESSA POSICAO
                             gtk_image_set_from_file(widgets_array[l][c].imagem,"parking-lot.png");
                             //MUDAR O NOME DO BUTTON
@@ -417,9 +418,7 @@ int main( int argc, char *argv[]){
                             //sec saida
                             sec_s=parque[posi][l][c].saida.secounds_saida;
 
-                            char pag[20];
-                            sprintf(pag, "%.2f", pagamento);
-                            Receive(argc,argv,matricula,dia_e,mes_e,ano_e,horas_e,min_e,sec_e,pag,dia_s,mes_s,ano_s,horas_s,min_s,sec_s);
+                            Receive(argc,argv,matricula,dia_e,mes_e,ano_e,horas_e,min_e,sec_e,pagamento,dia_s,mes_s,ano_s,horas_s,min_s,sec_s);
                             gtk_widget_show(windowPrincipal);
                             break;
                         }

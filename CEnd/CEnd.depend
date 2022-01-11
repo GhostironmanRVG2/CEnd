@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1641600869 source:c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\main.c
+1641843062 source:c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\main.c
 	<stdio.h>
 	<stdlib.h>
 	<gtk/gtk.h>
@@ -10,6 +10,7 @@
 	"SizeWindow.c"
 	"FilterWindow.c"
 	"HistoricView.c"
+	"Receive.c"
 
 1632553837 c:\msys64\mingw64\include\gtk-3.0\gtk\gtk.h
 	<gdk/gdk.h>
@@ -3019,33 +3020,38 @@
 
 1632553837 c:\msys64\mingw64\include\gtk-3.0\gtk\gtk-autocleanups.h
 
-1641580890 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\structed.c
+1641755889 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\structed.c
 	<gtk/gtk.h>
 
-1641572860 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\inputwindow.c
+1641755889 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\inputwindow.c
 	<gtk/gtk.h>
 	<string.h>
 	<ctype.h>
 	<errno.h>
 
-1641597811 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\parking.c
+1641843622 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\parking.c
 	<stdio.h>
 	<string.h>
 	<time.h>
 
-1640619493 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\infowindow.c
+1641755889 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\infowindow.c
 	<gtk/gtk.h>
 	<string.h>
 
-1640620073 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\sizewindow.c
+1641843884 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\sizewindow.c
 	<gtk/gtk.h>
 	<string.h>
 
-1641600823 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\filterwindow.c
+1641755889 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\filterwindow.c
 	<gtk/gtk.h>
 	<string.h>
 
-1641602771 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\historicview.c
+1641843827 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\historicview.c
 	<stdio.h>
 	<gtk/gtk.h>
+
+1641844046 c:\users\pedro\desktop\universidade\3 ano\projects\projeto de c\cend\receive.c
+	<gtk/gtk.h>
+	<string.h>
+	<stdio.h>
 

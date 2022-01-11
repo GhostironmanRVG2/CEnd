@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
-void Receive(int argc, char** argv,char matricula[],int dia_e,int mes_e,int ano_e,int horas_e,int min_e,int sec_e, char pagamento[],int dia_s,int mes_s,int ano_s,int horas_s,int min_s,int sec_s){
+void Receive(int argc, char** argv,char matricula[],int dia_e,int mes_e,int ano_e,int horas_e,int min_e,int sec_e, float pagamento,int dia_s,int mes_s,int ano_s,int horas_s,int min_s,int sec_s){
 
     /**FUNCAO PARA CRIAR ICON**/
     GdkPixbuf *create_pixbuf(const gchar * filename) {
@@ -157,9 +157,11 @@ void Receive(int argc, char** argv,char matricula[],int dia_e,int mes_e,int ano_
 
 
     //LABLEL VALOR DO PAGAMENTO
-    valor = gtk_label_new(pagamento);
+    char paga_now[10];
+    snprintf(paga_now,10,"%0.2f",pagamento);
+    valor = gtk_label_new(paga_now);
     gtk_widget_set_name(valor, "valor");
-    gtk_fixed_put(GTK_FIXED(fixedRecev), valor, 110, 260);
+    gtk_fixed_put(GTK_FIXED(fixedRecev), valor, 130, 260);
     gtk_widget_set_size_request(valor, 80, 30);
 
 

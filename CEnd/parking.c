@@ -109,7 +109,7 @@ void Estacionar(int p , int l ,int c,char m[], int t, parking ***parque){
 //FUNCAO PARA DETERMINAR O PAGAMENTO DO PARQUE
 void Pagamento(int p , int l ,int c,parking ***parque){
     float min, horas, dia, mes, ano,sec;
-    float total;
+    float total=0;
     float pagamento=2.50;
 
     //TOTAL DE HORAS PASSADAS
@@ -129,15 +129,13 @@ void Pagamento(int p , int l ,int c,parking ***parque){
     //NUMERO DE HORAS VS O PREÇO À HORA DO RESPETIVO TIPO DE VEICULO
     total = total * pagamento;
     //TOTAL A PAGAR É IGUAL AO NUMERO DE LAVAGENS X 20 (PREÇO POR LAVAGEM) + O AS HORAS
-    parque[p][l][c].veiculo.pagamento = (parque[p][l][c].veiculo.n_lavagens * 20) + total;
+    parque[p][l][c].veiculo.pagamento = total;
 }
 
 
 
 //FUNCAO PARA SETAR OS DADOS
 float Destacionar(int p , int l ,int c,int count, parking ***parque){
-//DAR ASIGN DOS VALORES COM PISO,LINHA E COLUNA FORNECIDOS CONSOANTE O QUE O UTILIZADOR CLICA NA FRONT-END
-    parque[p][l][c].veiculo.matricula[0]=0;
     //MUDAR O ESTADO SIMPLESMENTE PARA DESTACIONADO
     parque[p][l][c].estado=0;
     //INICIALIZAR DADOS DE TIME PARA SABER A DATA ATUAL
@@ -250,7 +248,7 @@ void inicializar(int defs_number,int carv_number,int bus_number,int helicopter_n
             //LINHA
             int c=0;
             for (c;c<coluna;c++){
-                parque[p][l][c].veiculo.matricula[0]=0;
+                parque[p][l][c].veiculo.matricula[0]='\0';
                 parque[p][l][c].tipo=1;
                 parque[p][l][c].veiculo.n_lavagens=0;
                 parque[p][l][c].entrada.year_chegada=0;
@@ -266,7 +264,7 @@ void inicializar(int defs_number,int carv_number,int bus_number,int helicopter_n
                 parque[p][l][c].saida.minutes_saida=0;
                 parque[p][l][c].saida.secounds_saida=0;
                 parque[p][l][c].estado=2;
-                parque[p][l][c].veiculo.pagamento=0;
+                parque[p][l][c].veiculo.pagamento=0.0;
             }
         }
     }

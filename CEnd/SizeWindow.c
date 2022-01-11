@@ -58,7 +58,7 @@ int * SizeWindow(int argc, char** argv, int* pp) {
     //CRIAR UMA WINDOW
     windowSize = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     //TITULO DA JANELA
-    gtk_window_set_title(GTK_WINDOW(windowSize), "Tamanho do Paruqe");
+    gtk_window_set_title(GTK_WINDOW(windowSize), "KARGA");
     //TAMANHO DA JANELA
     gtk_window_set_default_size(GTK_WINDOW(windowSize), 350, 300);
     //DIZER PARA FICAR NO MEIO

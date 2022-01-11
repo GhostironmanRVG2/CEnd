@@ -187,7 +187,7 @@ void historic(int argc, char *argv[],char matricula[]) {
             //CHAR PARA INSERIR NA LISTA
             char lista_insert[150];
             if(historico[i].estado==0){
-                snprintf(lista_insert,150,"[VEICULO REMOVIDO] MATRICULA: %s CHEGADA: %d/%d/%d %d:%d:%d SAIDA: %d/%d/%d %d:%d:%d PAGAMENTO: %f",
+                snprintf(lista_insert,150,"[VEICULO REMOVIDO] MATRICULA: %s CHEGADA: %d/%d/%d %d:%d:%d SAIDA: %d/%d/%d %d:%d:%d PAGAMENTO: %0.2f",
                 historico[i].veiculo.matricula,
                 historico[i].entrada.day_chegada,
                 historico[i].entrada.month_chegada,
